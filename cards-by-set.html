@@ -2,30 +2,37 @@
 layout: default
 title-tag: Nielsch hates Archidekt
 ---
-    <div id="settings">
-        <div id="settings-ignore-basics">
-            Whether to ignore basics
-            <input id="ib-cb-ignore" type="checkbox" checked onclick="toggleIgnoreBasics()"><label>Ignore basics</label>
+    <div id="settings" class="settings">
+        <div class="section-header">
+            <h4>Settings</h4>
+            <div class="section-expander" onclick="expandSection('settings-content', this)"><span>></span></div>
         </div>
-        <div id="settings settype">
-            What set types to include
-            <label>Expansion</label><input id="st-cb-expansion" type="checkbox" onclick="toggleType('expansion')">
-            <label>Core</label><input id="st-cb-core" type="checkbox" onclick="toggleType('core')">
-            <label>Masters</label><input id="st-cb-masters" type="checkbox" onclick="toggleType('masters')">
-            <label>Commander</label><input id="st-cb-commander" type="checkbox" onclick="toggleType('commander')">
-            <label>Box</label><input id="st-cb-box" type="checkbox" onclick="toggleType('box')">
-            <label>Promo</label><input id="st-cb-promo" type="checkbox" onclick="toggleType('promo')">
-        </div>
-        <div id="settings sort">
-            Sort
-            <form action="setSortMode()">
-                <select list="sortOptions" onchange="setSortMode(this)">
-                    <option value="most_cards">Most cards</option>
-                    <option value="least_cards">Least cards</option>
-                    <option value="oldest_first">Oldest first</option>
-                    <option value="newest_first">Newest first</option>
-                </select>
-            </form>
+        <div id="settings-content" class="hidden">
+            <div id="settings-toggles">
+                <div id="settings-ignore-basics">
+                    <input id="ib-cb-ignore" type="checkbox" checked onclick="toggleIgnoreBasics()"><label>Ignore basics</label>
+                </div>
+                <div id="settings-sort">
+                    Sort
+                    <form action="setSortMode()">
+                        <select list="sortOptions" onchange="setSortMode(this)">
+                            <option value="most_cards">Most cards</option>
+                            <option value="least_cards">Least cards</option>
+                            <option value="oldest_first">Oldest first</option>
+                            <option value="newest_first">Newest first</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+            <div id="settings settype" class="settings-types">
+                <div class="settings-types-header"><i>What set types to include</i></div>
+                <input id="st-cb-expansion" type="checkbox" onclick="toggleType('expansion')" checked><label>Expansion</label>
+                <input id="st-cb-core" type="checkbox" onclick="toggleType('core')" checked><label>Core</label>
+                <input id="st-cb-masters" type="checkbox" onclick="toggleType('masters')" checked><label>Masters</label>
+                <input id="st-cb-commander" type="checkbox" onclick="toggleType('commander')" checked><label>Commander</label>
+                <input id="st-cb-box" type="checkbox" onclick="toggleType('box')" checked><label>Box</label>
+                <input id="st-cb-promo" type="checkbox" onclick="toggleType('promo')" checked><label>Promo</label>
+            </div>
         </div>
     </div>
     <div id="query-input">
@@ -56,6 +63,13 @@ title-tag: Nielsch hates Archidekt
 
 
     <script>
+        function expandSection(sectionID, e) {
+            // document.querySelector(`#${sectionID}`).classList.add("expanded");
+            document.querySelector(`#${sectionID}`).classList.toggle("hidden");
+            e.classList.toggle("expanded");
+            console.log(e);
+        }
+
         let cardlist = [
             "Goblin Electromancer",
             "Doppelgang",

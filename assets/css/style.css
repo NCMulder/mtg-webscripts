@@ -1,6 +1,6 @@
 div {
-    border: 2px solid black;
-    padding: 4px;
+    /* border: 1px dotted black; */
+    /* padding: 4px; */
 }
 
 body {
@@ -9,7 +9,96 @@ body {
     height: 100%
 }
 
-input {
+/* input {
     min-width: 300px;
     padding: auto;
+} */
+
+.header {
+    display: flex;
+    font-weight: 800;
+    font-family: "Lato", "Helvetica Neue", "Arial";
+}
+
+.section-header {
+    display: flex;
+}
+
+.section-header>h4 {
+    margin: 2px;
+}
+
+.section-expander {
+    margin: auto 0;
+    padding: 0px 2px;
+    position: relative;
+    right: 0px;
+    user-select: none;
+}
+
+.section-expander.expanded>span {
+    rotate: 90deg;
+    transition: linear 0.1s;
+}
+
+.header div {
+    border-radius: 3px;
+    margin: 3px 5px;
+    padding: 3px 5px;
+    background: rgba(1, 1, 1, 0.212);
+}
+
+.header div:hover {
+    background: rgba(1, 1, 1, 0.377);
+}
+
+.header>a {
+    text-decoration: none;
+}
+
+#settings-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    font-size: 0.7em;
+    justify-content: center;
+    /* text-align: center; */
+    align-items: center;
+}
+
+#settings-content.hidden {
+    height: 0px;
+    display: none;
+}
+
+#settings-sort {
+    display: flex;
+    /* margin: 2px auto; */
+}
+
+#settings-toggles {
+    display: grid;
+}
+
+#settings-toggles>div {
+    align-items: center;
+    margin: 2px 2px;
+}
+
+#settings-toggles>div>input{
+    margin: 0 4px;
+}
+
+#settings-toggles>div select {
+    margin: 0 4px;
+}
+
+.settings-types {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr 3fr;
+    align-items: center;
+}
+
+.settings-types-header {
+    grid-column: 1 / 5;
+    margin: 1px auto;
 }
