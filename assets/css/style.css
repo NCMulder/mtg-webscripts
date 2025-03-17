@@ -6,13 +6,26 @@ div {
 body {
     background-image: linear-gradient(123deg, #6f6feb, #3cbffc);
     font-family: Lato, Verdana, Geneva, Tahoma, sans-serif;
-    height: 100%
+    height: 100vh;
 }
 
 /* input {
     min-width: 300px;
     padding: auto;
 } */
+
+/* .expandable {
+    display: none;
+} */
+
+.expandable:not(.expanded) {
+    display: none !important;
+}
+
+.footnote {
+    font-size: 0.6em;
+    font-style: italic;
+}
 
 .header {
     display: flex;
@@ -22,6 +35,7 @@ body {
 
 .section-header {
     display: flex;
+    cursor: pointer;
 }
 
 .section-header>h4 {
@@ -38,7 +52,16 @@ body {
 
 .section-expander.expanded>span {
     rotate: 90deg;
+    margin: 4px 2px;
+}
+
+.section-expander>span {
+    justify-content: center;
+    align-items: center;
+    margin: 0px 2px;
+    rotate: 0deg;
     transition: linear 0.1s;
+    display: block;
 }
 
 .header div {
@@ -46,6 +69,7 @@ body {
     margin: 3px 5px;
     padding: 3px 5px;
     background: rgba(1, 1, 1, 0.212);
+    cursor: pointer;
 }
 
 .header div:hover {
@@ -101,4 +125,66 @@ body {
 .settings-types-header {
     grid-column: 1 / 5;
     margin: 1px auto;
+}
+
+#input-modes {
+    display: flex;
+}
+
+#input-modes > div {
+    padding: 2px 4px;
+    margin: 2px 4px;
+    background: rgba(1, 1, 1, 0.212);
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+#input-modes > div:hover {
+    background: rgba(1, 1, 1, 0.377);
+    cursor: pointer;
+}
+
+#input-modes > div.active {
+    background: rgba(124, 8, 118, 0.377);
+}
+
+.input-container {
+    padding: 4px 4px;
+    /* display: flex; */
+    display: grid;
+    grid-template-columns: 2fr 8fr;
+}
+
+.input-container input[type="submit"] {
+    /* width: 80%; */
+    display: inline-flex;
+    margin: 2px auto;
+    right: 0;
+}
+
+#input-link {
+    display: grid;
+    grid-template-columns: 2fr 8fr;
+}
+
+#card-results {
+    /* display: flex; */
+    height: 100%;
+    width: 100%;
+}
+
+#results-progress {
+    margin: 40px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-style: italic;
+}
+
+#results {
+    /* display: flex; */
+    height: 100%;
+    overflow-y: scroll;
+    border: 4px solid rgba(189, 60, 167, 0.404)
 }
