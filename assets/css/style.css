@@ -193,6 +193,7 @@ body {
     background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.336));
     display: grid;
     grid-template-columns: 1fr 19fr 1fr;
+    cursor: pointer;
 }
 
 .set-title-bar>.set-info {
@@ -207,10 +208,37 @@ body {
 
 .set-cards {
     background: rgba(255, 255, 255, 0.336);
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.set-cards>a>img {
+.card-small {
     /* border: 2px solid blue; */
     border-radius: 7px;
     margin: 1px;
+}
+
+.cardbox {
+    position: relative;
+}
+
+/* .cardbox-card:hover {
+    position:relative;
+} */
+
+.cardbox-card:nth-child(1){
+    position: relative;
+    z-index: 2;
+}
+
+.cardbox-card ~ .cardbox-card {
+    position: absolute;
+    transform: translate(10px, -10px);
+    left: 0px;
+    /* transition: .1s; */
+}
+
+.cardbox:hover>.cardbox-card~.cardbox-card {
+    position: relative;
+    transform: rotate(0deg);
 }

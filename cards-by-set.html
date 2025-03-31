@@ -122,8 +122,8 @@ title-tag: Card Locator
         }
 
         let sorts = {
-            most_cards: ([setNameA, setA], [setNameB, setB]) => setB["cards"].length - setA["cards"].length,
-            least_cards: ([setNameA, setA], [setNameB, setB]) => setA["cards"].length - setB["cards"].length,
+            most_cards: ([setNameA, setA], [setNameB, setB]) => setB["uniqueCards"] - setA["uniqueCards"],
+            least_cards: ([setNameA, setA], [setNameB, setB]) => setA["uniqueCards"] - setB["uniqueCards"],
             oldest_first: ([setNameA, setA], [setNameB, setB]) => setA["setDate"] - setB["setDate"],
             newest_first: ([setNameA, setA], [setNameB, setB]) => setB["setDate"] - setA["setDate"],
         }
@@ -200,31 +200,42 @@ title-tag: Card Locator
         }
 
         function sortCardsIntoSets(cards){
+            console.log(cards.length)
             let sets = {};
 
             for(let card of cards){
-                for(let printing of card) {
-                    let setName = printing["set_name"];
+                // console.log(card);
+                let setName = card["set_name"];
 
-                    if (!Object.hasOwn(sets, setName)){
-                        sets[setName] = {
-                            setType: printing["set_type"],
-                            setUrl: printing["scryfall_set_uri"],
-                            setDate: new Date(printing["released_at"]),
-                            cards: [printing]
-                        };
+                if (!Object.hasOwn(sets, setName)){
+                    cardDict = {};
+                    cardDict[card["name"]] = [card];
+                    sets[setName] = {
+                        setType: card["set_type"],
+                        setUrl: card["scryfall_set_uri"],
+                        setDate: new Date(card["released_at"]),
+                        cards: cardDict,
+                        uniqueCards: 1,
+                        totalCards: 1
+                    };
+                } else {
+                    if (!Object.hasOwn(sets[setName]["cards"], card["name"])) {
+                        sets[setName]["cards"][card["name"]] = [card];
+                        sets[setName]["uniqueCards"] += 1; 
+                        sets[setName]["totalCards"] += 1; 
                     } else {
-                        sets[setName]["cards"].push(printing);
+                        sets[setName]["cards"][card["name"]].push(card);
+                        sets[setName]["totalCards"] += 1; 
                     }
                 }
             }
 
-            console.log(sets);
             return sets;
         }
 
         function drawSetTitle(setname, set){
-            console.log(setname, set);
+            // Get the setcode from the URI
+            // TODO: cleaner set code/icon getting
             let setCode = /https:\/\/scryfall\.com\/sets\/(.*)\?.*/.exec(set["setUrl"])[1];
 
             barDiv = document.createElement("div");
@@ -239,7 +250,7 @@ title-tag: Card Locator
             setInfo.classList.add("set-info")
 
             setTitle = document.createElement("div");
-            setTitle.innerHTML = `${setname} | ${set["cards"].length}(${"?"}) cards`
+            setTitle.innerHTML = `${setname} | ${set["uniqueCards"]} (${set["totalCards"]}) cards`
 
             setSubtitle = document.createElement("div");
             setSubtitle.innerHTML = `${setCode.toUpperCase()} | ${set["setType"]} | ${set["setDate"].toLocaleDateString()}`;
@@ -257,12 +268,7 @@ title-tag: Card Locator
             svgElem.setAttribute("fill", "#000000");
             svgElem.setAttribute("height", "10px");
             svgElem.setAttribute("width", "10px");
-            // svgElem.setAttribute("version", "1.1");
-            // svgElem.setAttribute("id", "Layer_1");
-            // svgElem.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-            // svgElem.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
             svgElem.setAttribute("viewBox", "0 0 330 330");
-            // svgElem.setAttribute("xml:space", "preserve");
 
             svgPath = document.createElementNS(ns, "path");
             svgPath.setAttribute("id", "XMLID_222_");
@@ -279,6 +285,23 @@ title-tag: Card Locator
             return barDiv;
         }
 
+        function drawCardbox(cardName, cardPrintings) {
+            cardBox = document.createElement("div");
+            cardBox.classList.add("cardbox");
+            cardPrintings.forEach(card => {
+                imgADiv = document.createElement("a");
+                imgADiv.setAttribute("href", card["scryfall_uri"]);
+                imgADiv.classList.add("cardbox-card");
+                imgDiv = document.createElement("img");
+                imgDiv.classList.add("card-small");
+                imgDiv.setAttribute("src", (card["image_uris"] || card["card_faces"][0]["image_uris"])["small"])
+                cardBox.appendChild(imgADiv);
+                imgADiv.appendChild(imgDiv);
+            })
+
+            return cardBox;
+        }
+
         function drawCards(cards){
             // Reset the results
             document.getElementById("results").innerHTML = "";
@@ -291,41 +314,22 @@ title-tag: Card Locator
                     return;
                 }
 
-                // console.log(setName, set);
-
                 setDiv = document.createElement("div");
 
                 let sDiv = drawSetTitle(setName, set);
                 setDiv.appendChild(sDiv);
 
-
-                // titleADiv = document.createElement("a");
-                // titleADiv.setAttribute("href", set["setUrl"]);
-                // titleDiv = document.createElement("h4");
-                // titleDiv.innerHTML = `${setName} (${set["setType"]})`;
-                // titleADiv.appendChild(titleDiv);
-                // typeDiv = document.createElement("span");
-                // typeDiv.innerHTML = set["setType"];
                 let setCode = /https:\/\/scryfall\.com\/sets\/(.*)\?.*/.exec(set["setUrl"])[1];
                 cardsDiv = document.createElement("div");
                 cardsDiv.classList.add("set-cards");
                 cardsDiv.id = `set-cards-${setCode}`
                 cardsDiv.classList.add("expandable");
                 cardsDiv.classList.add("expanded");
-                set["cards"].forEach((card) => {
-                    imgADiv = document.createElement("a");
-                    imgADiv.setAttribute("href", card["scryfall_uri"]);
-                    imgDiv = document.createElement("img");
-                    imgDiv.setAttribute("src", (card["image_uris"] || card["card_faces"][0]["image_uris"])["small"])
-                    imgADiv.appendChild(imgDiv);
-                    cardsDiv.appendChild(imgADiv);
+                Object.entries(set["cards"]).forEach(([cardName, cards]) => {
+                    cardsDiv.appendChild(drawCardbox(cardName, cards));
                 })
-                // setDiv.appendChild(titleADiv);
-                // setDiv.appendChild(typeDiv);
 
                 setDiv.appendChild(cardsDiv);
-
-                // setDiv.appendChild(cardsDiv);
                 document.getElementById("results").appendChild(setDiv);
             })
 
@@ -439,9 +443,13 @@ title-tag: Card Locator
             nCards = decklist.length;
             currCard = 0;
 
-            const cards = await Promise.all(orcards.map((card, idx) => 
+            let cards = await Promise.all(orcards.map((card, idx) => 
                 getCard(card, idx)
             ));
+
+            // Combine them back again
+            cards = [].concat(...cards);
+
             document.querySelector("#results-progress").innerHTML = ``;
             document.querySelector("#results-progress").classList.remove("expanded");
 
