@@ -1,6 +1,6 @@
 ---
 layout: default
-title-tag: Nielsch hates Archidekt
+title-tag: Card Locator
 ---
     <div id="settings" class="settings">
         <div class="section-header"  onclick="expandSection('settings-content', this)">
@@ -75,7 +75,7 @@ title-tag: Nielsch hates Archidekt
         </div>
     </div>
     <div id="card-results">
-        <div id="results-progress">
+        <div id="results-progress" class="expandable expanded">
             Enter a link or a decklist above
         </div>
         <div id="results"></div>
@@ -223,6 +223,62 @@ title-tag: Nielsch hates Archidekt
             return sets;
         }
 
+        function drawSetTitle(setname, set){
+            console.log(setname, set);
+            let setCode = /https:\/\/scryfall\.com\/sets\/(.*)\?.*/.exec(set["setUrl"])[1];
+
+            barDiv = document.createElement("div");
+            barDiv.classList.add(["set-title-bar"]);
+            barDiv.setAttribute("onclick",  `expandSection('set-cards-${setCode}', this)`);
+
+            setIcon = document.createElement("img");
+            setIcon.classList.add(["set-icon"]);
+            setIcon.setAttribute("src", `https://svgs.scryfall.io/sets/${setCode}.svg`);
+            
+            setInfo = document.createElement("div");
+            setInfo.classList.add("set-info")
+
+            setTitle = document.createElement("div");
+            setTitle.innerHTML = `${setname} | ${set["cards"].length}(${"?"}) cards`
+
+            setSubtitle = document.createElement("div");
+            setSubtitle.innerHTML = `${setCode.toUpperCase()} | ${set["setType"]} | ${set["setDate"].toLocaleDateString()}`;
+            setSubtitle.classList.add("footnote");
+            setInfo.appendChild(setTitle);
+            setInfo.appendChild(setSubtitle);
+
+            expander = document.createElement("div");
+            expander.classList.add("section-expander");
+            expander.classList.add("expanded");
+
+            svgSpan = document.createElement("span");
+            ns = "http://www.w3.org/2000/svg"
+            svgElem = document.createElementNS(ns, "svg");
+            svgElem.setAttribute("fill", "#000000");
+            svgElem.setAttribute("height", "10px");
+            svgElem.setAttribute("width", "10px");
+            // svgElem.setAttribute("version", "1.1");
+            // svgElem.setAttribute("id", "Layer_1");
+            // svgElem.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+            // svgElem.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+            svgElem.setAttribute("viewBox", "0 0 330 330");
+            // svgElem.setAttribute("xml:space", "preserve");
+
+            svgPath = document.createElementNS(ns, "path");
+            svgPath.setAttribute("id", "XMLID_222_");
+            svgPath.setAttribute("d", "M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001  c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213  C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606  C255,161.018,253.42,157.202,250.606,154.389z");
+            
+            svgElem.appendChild(svgPath);
+            svgSpan.appendChild(svgElem);
+            expander.appendChild(svgSpan);
+
+            barDiv.appendChild(setIcon);
+            barDiv.appendChild(setInfo);
+            barDiv.appendChild(expander);
+
+            return barDiv;
+        }
+
         function drawCards(cards){
             // Reset the results
             document.getElementById("results").innerHTML = "";
@@ -235,15 +291,27 @@ title-tag: Nielsch hates Archidekt
                     return;
                 }
 
+                // console.log(setName, set);
+
                 setDiv = document.createElement("div");
-                titleADiv = document.createElement("a");
-                titleADiv.setAttribute("href", set["setUrl"]);
-                titleDiv = document.createElement("h4");
-                titleDiv.innerHTML = `${setName} (${set["setType"]})`;
-                titleADiv.appendChild(titleDiv);
+
+                let sDiv = drawSetTitle(setName, set);
+                setDiv.appendChild(sDiv);
+
+
+                // titleADiv = document.createElement("a");
+                // titleADiv.setAttribute("href", set["setUrl"]);
+                // titleDiv = document.createElement("h4");
+                // titleDiv.innerHTML = `${setName} (${set["setType"]})`;
+                // titleADiv.appendChild(titleDiv);
                 // typeDiv = document.createElement("span");
                 // typeDiv.innerHTML = set["setType"];
+                let setCode = /https:\/\/scryfall\.com\/sets\/(.*)\?.*/.exec(set["setUrl"])[1];
                 cardsDiv = document.createElement("div");
+                cardsDiv.classList.add("set-cards");
+                cardsDiv.id = `set-cards-${setCode}`
+                cardsDiv.classList.add("expandable");
+                cardsDiv.classList.add("expanded");
                 set["cards"].forEach((card) => {
                     imgADiv = document.createElement("a");
                     imgADiv.setAttribute("href", card["scryfall_uri"]);
@@ -252,9 +320,12 @@ title-tag: Nielsch hates Archidekt
                     imgADiv.appendChild(imgDiv);
                     cardsDiv.appendChild(imgADiv);
                 })
-                setDiv.appendChild(titleADiv);
+                // setDiv.appendChild(titleADiv);
                 // setDiv.appendChild(typeDiv);
+
                 setDiv.appendChild(cardsDiv);
+
+                // setDiv.appendChild(cardsDiv);
                 document.getElementById("results").appendChild(setDiv);
             })
 
@@ -296,6 +367,7 @@ title-tag: Nielsch hates Archidekt
 
         async function getCards(mode) {
             var decklist;
+            document.querySelector("#results-progress").classList.add("expanded");
             // Get the decklist from the link
             if(mode == 'link'){
                 // Get url, deck ID
@@ -371,6 +443,7 @@ title-tag: Nielsch hates Archidekt
                 getCard(card, idx)
             ));
             document.querySelector("#results-progress").innerHTML = ``;
+            document.querySelector("#results-progress").classList.remove("expanded");
 
             let sets = sortCardsIntoSets(cards);
             sortedCards = sets;
