@@ -220,6 +220,7 @@ body {
 
 .cardbox {
     position: relative;
+    /* border: 2px solid red; */
 }
 
 /* .cardbox-card:hover {
@@ -228,17 +229,40 @@ body {
 
 .cardbox-card:nth-child(1){
     position: relative;
+    min-width: 110%;
     z-index: 2;
 }
 
 .cardbox-card ~ .cardbox-card {
     position: absolute;
-    transform: translate(10px, -10px);
+    transform: scale(90%) translate(calc(15px - 2px * var(--td-card-index)), 0px) rotate(calc(5deg * var(--td-card-index)));
     left: 0px;
-    /* transition: .1s; */
+    transition: .1s;
 }
 
 .cardbox:hover>.cardbox-card~.cardbox-card {
-    position: relative;
-    transform: rotate(0deg);
+    /* position: relative; */
+    /* transform: rotate(0deg); */
+    /* transform: translateX(100%) !important; */
+    transform: translateX(calc(100% * var(--td-card-index))) !important;
+}
+
+.cardbox:hover>.card-placeholder {
+    display: inline;
+    visibility: hidden;
+    margin: 1px;
+}
+
+.card-placeholder {
+    display: none;
+}
+
+.cardbox-spacer {
+    display: inline-block;
+    width: 20px;
+}
+
+.cardbox:hover>.cardbox-spacer {
+    display: inline;
+    visibility: hidden;
 }

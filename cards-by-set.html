@@ -288,14 +288,29 @@ title-tag: Card Locator
         function drawCardbox(cardName, cardPrintings) {
             cardBox = document.createElement("div");
             cardBox.classList.add("cardbox");
-            cardPrintings.forEach(card => {
+            cardPrintings.forEach((card, idx) => {
                 imgADiv = document.createElement("a");
                 imgADiv.setAttribute("href", card["scryfall_uri"]);
                 imgADiv.classList.add("cardbox-card");
+                // imgADiv.setAttribute("style", `transform: scale(90%) translateX(15px) rotate(${(idx + 1) * 10}0deg), --td-card-index: ${idx}`)
+                imgADiv.style.setProperty("--td-card-index", idx)
+                // imgADiv.style.transform = `scale(90%) translateX(15px) rotate(${(idx) * 10}deg)`;
                 imgDiv = document.createElement("img");
                 imgDiv.classList.add("card-small");
                 imgDiv.setAttribute("src", (card["image_uris"] || card["card_faces"][0]["image_uris"])["small"])
                 cardBox.appendChild(imgADiv);
+                if(idx == 1){
+                    // add a spacer?
+                    spacerDiv = document.createElement("div");
+                    spacerDiv.classList.add("cardbox-spacer");
+                    cardBox.appendChild(spacerDiv);
+                }
+                if(idx > 0){
+                    phantomImg = document.createElement("img");
+                    phantomImg.classList.add("card-placeholder");
+                    phantomImg.setAttribute("src", (card["image_uris"] || card["card_faces"][0]["image_uris"])["small"])
+                    cardBox.appendChild(phantomImg);
+                }
                 imgADiv.appendChild(imgDiv);
             })
 
