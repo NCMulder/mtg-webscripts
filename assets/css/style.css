@@ -267,6 +267,36 @@ body {
     visibility: hidden;
 }
 
+.mtg-card {
+    border: 2px solid black;
+    border-radius: 16px;
+    height: 400px;
+    width: 280px;
+    margin: 40px auto;
+
+    background: url("https://cards.scryfall.io/large/front/0/7/070ff479-9d87-4ab6-aaaa-e96b9df0bac4.jpg?1572491113");
+    background-size: cover;
+
+    animation-name: rotateCard;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+
+    transform: perspective(800px);
+}
+
+@keyframes rotateCard {
+    0% {
+        transform: perspective(800px) rotateY(0deg);
+    }
+    50% {
+        transform: perspective(800px) rotateY(180deg);
+    }
+    100%{
+        transform: perspective(800px) rotateY(360deg);
+    }
+}
+
 .event-settings {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
