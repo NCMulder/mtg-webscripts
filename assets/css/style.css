@@ -268,32 +268,82 @@ body {
 }
 
 .mtg-card {
-    border: 2px solid black;
+    /* border: 2px solid black; */
     border-radius: 16px;
     height: 400px;
-    width: 280px;
+    width: 286px;
     margin: 40px auto;
 
     background: url("https://cards.scryfall.io/large/front/0/7/070ff479-9d87-4ab6-aaaa-e96b9df0bac4.jpg?1572491113");
     background-size: cover;
 
-    animation-name: rotateCard;
+    /* animation-name: rotateCard; */
     animation-duration: 10s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
 
-    transform: perspective(800px);
+    /* transform: perspective(800px); */
+    transform: perspective(800px) rotateY(var(--mc-tilt-y)) rotateX(var(--mc-tilt-x));
+    transition: 2s;
+}
+
+.mtg-card-back {
+    background: url("https://files.mtg.wiki/thumb/Magic_card_back.jpg/429px-Magic_card_back.jpg?20250120070248");
+    background-size: cover;
+    /* animation-name: rotateCardBack; */
+    transform: translateY(-440px);
+    z-index: -4;
 }
 
 @keyframes rotateCard {
     0% {
-        transform: perspective(800px) rotateY(0deg);
+        transform: perspective(820px) translateZ(0px) rotateY(0deg);
+    }
+    24% {
+        opacity: 1;
+    }
+    25%{
+        opacity: 0;
     }
     50% {
-        transform: perspective(800px) rotateY(180deg);
+        transform: perspective(800px) translateZ(-20px) rotateY(180deg);
+    }
+    74%{
+        opacity: 0;
+    }
+    75%{
+        opacity: 1;
     }
     100%{
-        transform: perspective(800px) rotateY(360deg);
+        transform: perspective(820px) translateZ(0px) rotateY(360deg);
+    }
+}
+
+@keyframes rotateCardBack {
+    0% {
+        transform: translateY(-440px) translateZ(-20px) perspective(800px) rotateY(180deg);
+        
+        opacity: 0;
+    }
+    24% {
+        opacity: 0;
+    }
+    25%{
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-440px) translateZ(0px) perspective(800px) rotateY(360deg);
+    }
+    74%{
+        opacity: 1;
+    }
+    75%{
+        opacity: 0;
+    }
+    100%{
+        transform: translateY(-440px) translateZ(-20px) perspective(800px) rotateY(540deg);
+        
+        opacity: 0;
     }
 }
 

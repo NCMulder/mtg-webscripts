@@ -4,7 +4,45 @@ title-tag: Card Visualizer
 ---
 
 <div>
-    <div class="mtg-card">
-        wahoo
+    <div class="mtg-card" id="mtg-card" onpointerdown="(e) => clickCard(e)">
     </div>
+    <!-- <div class="mtg-card mtg-card-back">
+        wahoo
+    </div> -->
 </div>
+
+<script>
+    let trackMouse = false;
+    let oldPos = [0, 0];
+    let newPos = [0, 0];
+
+    let maxTiltX = 30;
+    let maxTiltY = 10;
+
+    document.onpointermove = ((e) =>{
+        if (trackMouse) {
+            newPos = [e.x, e.y];
+
+            let tiltX = Math.max(Math.min((oldPos[0] - newPos[0]) / 10, maxTiltX), -maxTiltX);
+            let tiltY = Math.max(Math.min((oldPos[1] - newPos[1]) / 30, maxTiltY), -maxTiltY);
+
+            document.getElementById("mtg-card").style.setProperty("--mc-tilt-y", `${-tiltX}deg`);
+            document.getElementById("mtg-card").style.setProperty("--mc-tilt-x", `${tiltY}deg`);
+        }
+    });
+
+    document.onpointerup = ((e) => {
+        trackMouse = false;
+        document.getElementById("mtg-card").style.setProperty("transition", `.5s`);
+        document.getElementById("mtg-card").style.setProperty("--mc-tilt-y", `0deg`);
+        document.getElementById("mtg-card").style.setProperty("--mc-tilt-x", `0deg`);
+    })
+
+    document.getElementById("mtg-card").addEventListener("pointerdown", (e) => {
+        trackMouse = true;
+        document.getElementById("mtg-card").style.setProperty("transition", `0s`);
+        oldPos = [e.x, e.y];
+    });
+
+
+</script>
