@@ -33,15 +33,17 @@ title-tag: Card Visualizer
 
     document.onpointerup = ((e) => {
         trackMouse = false;
-        document.getElementById("mtg-card").style.setProperty("transition", `.5s`);
+        // document.getElementById("mtg-card").style.setProperty("transition", `.5s`);
         document.getElementById("mtg-card").style.setProperty("--mc-tilt-y", `0deg`);
         document.getElementById("mtg-card").style.setProperty("--mc-tilt-x", `0deg`);
+        document.getElementById("mtg-card").style.setProperty("animation-play-state", `running`);
     })
 
     document.getElementById("mtg-card").addEventListener("pointerdown", (e) => {
         trackMouse = true;
-        document.getElementById("mtg-card").style.setProperty("transition", `0s`);
+        // document.getElementById("mtg-card").style.setProperty("transition", `0s`);
         oldPos = [e.x, e.y];
+        document.getElementById("mtg-card").style.setProperty("animation-play-state", `paused`);
     });
 
 

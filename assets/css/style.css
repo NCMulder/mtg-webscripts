@@ -277,14 +277,19 @@ body {
     background: url("https://cards.scryfall.io/large/front/0/7/070ff479-9d87-4ab6-aaaa-e96b9df0bac4.jpg?1572491113");
     background-size: cover;
 
-    /* animation-name: rotateCard; */
+    animation-name: rotateCard;
+    animation-play-state: running;
     animation-duration: 10s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
 
     /* transform: perspective(800px); */
+    --mc-tilt-x: 0;
+    --mc-tilt-y: 0;
     transform: perspective(800px) rotateY(var(--mc-tilt-y)) rotateX(var(--mc-tilt-x));
-    transition: 2s;
+    transition: 6s;
+
+    backface-visibility: hidden;
 }
 
 .mtg-card-back {
@@ -297,25 +302,13 @@ body {
 
 @keyframes rotateCard {
     0% {
-        transform: perspective(820px) translateZ(0px) rotateY(0deg);
-    }
-    24% {
-        opacity: 1;
-    }
-    25%{
-        opacity: 0;
+        transform: perspective(820px) translateZ(0px) rotateY(0deg) rotateY(var(--mc-tilt-y)) rotateX(var(--mc-tilt-x));
     }
     50% {
-        transform: perspective(800px) translateZ(-20px) rotateY(180deg);
-    }
-    74%{
-        opacity: 0;
-    }
-    75%{
-        opacity: 1;
+        transform: perspective(800px) translateZ(-20px) rotateY(180deg) rotateY(var(--mc-tilt-y)) rotateX(var(--mc-tilt-x));
     }
     100%{
-        transform: perspective(820px) translateZ(0px) rotateY(360deg);
+        transform: perspective(820px) translateZ(0px) rotateY(360deg) rotateY(var(--mc-tilt-y)) rotateX(var(--mc-tilt-x));
     }
 }
 
