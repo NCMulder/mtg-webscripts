@@ -1,0 +1,26 @@
+---
+layout: default
+title-tag: Auction Draft Helper
+---
+<div id="card-grid">
+    
+</div>
+<button onclick="addGridCard()">Add card</button>
+<script>
+
+document.addEventListener("DOMContentLoaded", function(event) {
+    for(var i = 0; i < 14; i++){
+        addGridCard();
+    }
+});
+
+function addGridCard(){
+    console.log("hello");
+    let cardGrid = document.getElementById("card-grid");
+    
+    let cardDiv = document.createElement("div");
+    cardDiv.classList.add("auction-card");
+
+    cardGrid.appendChild(cardDiv);
+}
+</script>

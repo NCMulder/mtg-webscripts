@@ -2,13 +2,36 @@
 layout: default
 title-tag: Card Visualizer
 ---
-
-<div>
-    <div class="mtg-card" id="mtg-card" onpointerdown="(e) => clickCard(e)">
+<div class="deck-root">
+    <div class="deck-list">
+        <h1>Decklist</h1>
+        <div>
+            <div class="deck-card">
+                <img src="https://cards.scryfall.io/png/front/f/e/feddbdc6-0757-43cb-bb41-dc83c6cf42ea.png?1627709701"/>
+            </div>
+            <div class="deck-card">
+                <img src="https://cards.scryfall.io/png/front/8/0/80f766a3-ec88-46ee-bf07-b6997cd0f95a.png?1681411625"/>
+            </div>
+            <div class="deck-card">
+                <img src="https://cards.scryfall.io/png/front/d/8/d8df85a5-8b55-4f45-821e-e8613d0ea350.png?1562082066"/>
+            </div>
+            <div class="deck-card">
+                <img src="https://cards.scryfall.io/png/front/9/5/95c2390f-71f1-4e42-83da-d603ca86a8d0.png?1717012101"/>
+            </div>
+            <div class="deck-card">
+                <img src="https://cards.scryfall.io/png/front/6/2/625b175a-b63f-46d1-a7e1-95dfc7c03e3f.png?1738357918"/>
+            </div>
+        </div>
     </div>
-    <!-- <div class="mtg-card mtg-card-back">
-        wahoo
-    </div> -->
+
+    <div class="deck-spotlight">
+        <div class="mtg-card" id="mtg-card" onpointerdown="(e) => clickCard(e)">
+        </div>
+        <div class="mtg-card mtg-card-back">
+        </div>
+        <div class="mtg-card-shadow mtg-card">
+        </div>
+    </div>
 </div>
 
 <script>
@@ -19,6 +42,8 @@ title-tag: Card Visualizer
     let maxTiltX = 30;
     let maxTiltY = 10;
 
+    let activeCardURL = "https://cards.scryfall.io/large/front/0/7/070ff479-9d87-4ab6-aaaa-e96b9df0bac4.jpg?1572491113";
+
     document.onpointermove = ((e) =>{
         if (trackMouse) {
             newPos = [e.x, e.y];
@@ -26,25 +51,45 @@ title-tag: Card Visualizer
             let tiltX = Math.max(Math.min((oldPos[0] - newPos[0]) / 10, maxTiltX), -maxTiltX);
             let tiltY = Math.max(Math.min((oldPos[1] - newPos[1]) / 30, maxTiltY), -maxTiltY);
 
-            document.getElementById("mtg-card").style.setProperty("--mc-tilt-y", `${-tiltX}deg`);
-            document.getElementById("mtg-card").style.setProperty("--mc-tilt-x", `${tiltY}deg`);
+            document.querySelectorAll(".mtg-card").forEach(element => {
+                element.style.setProperty("--mc-tilt-y", `${-tiltX}deg`);
+                element.style.setProperty("--mc-tilt-x", `${tiltY}deg`);
+            })
         }
     });
 
     document.onpointerup = ((e) => {
         trackMouse = false;
         // document.getElementById("mtg-card").style.setProperty("transition", `.5s`);
-        document.getElementById("mtg-card").style.setProperty("--mc-tilt-y", `0deg`);
-        document.getElementById("mtg-card").style.setProperty("--mc-tilt-x", `0deg`);
-        document.getElementById("mtg-card").style.setProperty("animation-play-state", `running`);
+        document.querySelectorAll(".mtg-card").forEach(element => {
+            element.style.setProperty("--mc-tilt-y", `0deg`);
+            element.style.setProperty("--mc-tilt-x", `0deg`);
+            element.style.setProperty("animation-play-state", `running`);
+        });
     })
 
-    document.getElementById("mtg-card").addEventListener("pointerdown", (e) => {
-        trackMouse = true;
-        // document.getElementById("mtg-card").style.setProperty("transition", `0s`);
-        oldPos = [e.x, e.y];
-        document.getElementById("mtg-card").style.setProperty("animation-play-state", `paused`);
+    document.querySelectorAll(".mtg-card").forEach(element => {
+        element.addEventListener("pointerdown", (e) => {
+            trackMouse = true;
+            oldPos = [e.x, e.y];
+            document.querySelectorAll(".mtg-card").forEach(element => {
+                element.style.setProperty("animation-play-state", `paused`);
+            });
+        });
     });
+
+    document.querySelectorAll(".deck-card").forEach(element => {
+        element.addEventListener("mouseover", (e) => {
+            console.log(e);
+            document.querySelector(".deck-root").classList.add("blurred");
+            document.querySelector("#mtg-card").style.background = `url(${e.target.src})`;
+            document.querySelector("#mtg-card").style.backgroundSize = `cover`;
+        });
+        element.addEventListener("mouseout", (e) => {
+            console.log(e);
+            document.querySelector(".deck-root").classList.remove("blurred");
+        });
+    })
 
 
 </script>

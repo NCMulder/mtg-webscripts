@@ -270,6 +270,7 @@ body {
 .mtg-card {
     /* border: 2px solid black; */
     border-radius: 16px;
+
     height: 400px;
     width: 286px;
     margin: 40px auto;
@@ -283,9 +284,14 @@ body {
     animation-timing-function: linear;
     animation-iteration-count: infinite;
 
+    animation: bobCard 4s linear infinite, rotateCard 4s ease-in-out infinite;
+
     /* transform: perspective(800px); */
-    --mc-tilt-x: 0;
-    --mc-tilt-y: 0;
+    --mc-tilt-x: 0deg;
+    --mc-tilt-y: 0deg;
+    --mc-rotate-y-offset: 0deg;
+
+    --mc-translate-y-offset: 0px;
     transform: perspective(800px) rotateY(var(--mc-tilt-y)) rotateX(var(--mc-tilt-x));
     transition: 6s;
 
@@ -296,19 +302,55 @@ body {
     background: url("https://files.mtg.wiki/thumb/Magic_card_back.jpg/429px-Magic_card_back.jpg?20250120070248");
     background-size: cover;
     /* animation-name: rotateCardBack; */
+    --mc-rotate-y-offset: 180deg;
+    --mc-translate-y-offset: -440px;
     transform: translateY(-440px);
-    z-index: -4;
+    /* z-index: -4; */
+}
+
+.mtg-card-shadow {
+    height: 40px;
+    width: 200px;
+    background: radial-gradient(#00000096, #00000000 60%);
+    border: none;
+    /* border-radius: 50%; */
+    margin: 40px auto;
+    transform: translateY(-400px);
+    --mc-tilt-x: 0deg;
+    --mc-tilt-y: 0deg;
+    --mc-rotate-y-offset: 0deg;
+
+    --mc-translate-y-offset: -400px;
+    animation: bobCard 4s linear infinite, shadow 4s ease-in-out infinite;
 }
 
 @keyframes rotateCard {
     0% {
-        transform: perspective(820px) translateZ(0px) rotateY(0deg) rotateY(var(--mc-tilt-y)) rotateX(var(--mc-tilt-x));
+        transform: translateY(var(--mc-translate-y-offset)) perspective(800px) rotateY(calc(-40deg + var(--mc-rotate-y-offset) + var(--mc-tilt-y))) rotateX(var(--mc-tilt-x));
     }
     50% {
-        transform: perspective(800px) translateZ(-20px) rotateY(180deg) rotateY(var(--mc-tilt-y)) rotateX(var(--mc-tilt-x));
+        transform: translateY(calc(var(--mc-translate-y-offset) + 20px)) perspective(800px) rotateY(calc(-10deg + var(--mc-rotate-y-offset) + var(--mc-tilt-y))) rotateX(var(--mc-tilt-x));
     }
     100%{
-        transform: perspective(820px) translateZ(0px) rotateY(360deg) rotateY(var(--mc-tilt-y)) rotateX(var(--mc-tilt-x));
+        transform: translateY(var(--mc-translate-y-offset)) perspective(800px) rotateY(calc(-40deg + var(--mc-rotate-y-offset) + var(--mc-tilt-y))) rotateX(var(--mc-tilt-x));
+    }
+}
+
+@keyframes shadow {
+    0% {
+        transform: translateY(var(--mc-translate-y-offset)) perspective(800px) rotateY(calc(-40deg + var(--mc-rotate-y-offset) + var(--mc-tilt-y))) rotateX(var(--mc-tilt-x));
+        opacity: 0.8;
+        height: 40px;
+    }
+    50% {
+        transform: translateY(calc(var(--mc-translate-y-offset) + 10px)) perspective(800px) rotateY(calc(-10deg + var(--mc-rotate-y-offset) + var(--mc-tilt-y))) rotateX(var(--mc-tilt-x));
+        opacity: 1;
+        height: 30px;
+    }
+    100%{
+        transform: translateY(var(--mc-translate-y-offset)) perspective(800px) rotateY(calc(-40deg + var(--mc-rotate-y-offset) + var(--mc-tilt-y))) rotateX(var(--mc-tilt-x));
+        opacity: 0.8;
+        height: 40px;
     }
 }
 
@@ -431,4 +473,44 @@ body {
 
 .mtg-color-picker.picked {
     opacity: 1; 
+}
+
+.deck-root.blurred img{
+}
+
+.deck-root {
+    display: grid;
+    grid-template-columns: 70fr 30fr;
+}
+
+.deck-card {
+    position: relative;
+    height: 20px;
+    width: 140px;
+}
+
+.deck-card>img {
+    position: relative;
+    width: 100%;
+    transition: .5s;
+}
+
+.deck-card>img:hover{
+    z-index: 1000;
+    transform: scale(103%) translateX(1px) translateY(-2px) rotateZ(1deg);
+}
+
+#card-grid{
+    /* display:inline-flex; */
+}
+
+.auction-card {
+    border-radius: 1em;
+    border: 3px solid grey;
+    background: rgba(0, 0, 0, 0.404);
+    width: 25%;
+    aspect-ratio: 1/1.4;
+    min-width: 40px;
+    min-height: 40px;
+    margin: 6px;
 }
