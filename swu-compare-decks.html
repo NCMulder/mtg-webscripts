@@ -1,0 +1,274 @@
+---
+layout: default
+title-tag: SWU Deck Comparer
+---
+
+<div id="query-input">
+    <div class="section-header" onclick="expandSection('swu-link-list', this)">
+        <h4>Input</h4>
+        <div class="section-expander expanded">
+            <span>
+                <svg fill="#000000" height="10px" width="10px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 330 330" xml:space="preserve">
+                    <path id="XMLID_222_" d="M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001  c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213  C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606  C255,161.018,253.42,157.202,250.606,154.389z"/>
+                </svg>
+            </span>
+        </div>
+    </div>
+    <div id="swu-link-list">
+
+    </div>
+    <span class="footnote">Supported sites: SWUDB. Todo: Melee.</span><br />        
+    <input type="submit" value="Compare decklists!" onclick="compareDecklists()">
+    <input type="submit" value="Add decklist input" onclick="addInput()">
+</div>
+
+<div>
+    Common cards
+    <div id="swu-mutual-cards" class="swu-cardlist set-cards">
+
+    </div>
+</div>
+<div id="card-tooltip" style="left: 0; top: 0">
+    <img id="card-tooltip-img" src=""/>
+</div>
+
+<script>
+    function expandSection(sectionID, e) {
+        document.querySelector(`#${sectionID}`).classList.toggle("expanded");
+        e.querySelector('.section-expander').classList.toggle("expanded");
+    }
+
+    let cardboxFragment = null;
+    async function getCardBoxHTML(){
+        return fetch("cardbox-fragment.html").then((r) => r.text());
+    }
+
+    let cardlistFragment = null;
+    async function getCardlistHTML(){
+        return fetch("swu-cardlist-entry.html").then((r) => r.text());
+    }
+
+    let inputFragment = null;
+    async function getInputHTML(){
+        return fetch("swu-link-input.html").then((r) => r.text());
+    }
+
+    let inputs = 0;
+    function addInput(){
+        let inputsDiv = document.getElementById("swu-link-list");
+        let fragment = inputFragment.replace("\{\{ include.number \}\}", ++inputs);
+        inputsDiv.insertAdjacentHTML('beforeend', fragment);
+    }
+
+    async function compareDecklists(){
+        // Get ids
+        let url_elements = document.getElementsByClassName("decklist-url");
+        let urls = Array.prototype.map.call(url_elements, (e) => e.value);
+
+        let swudb_regex = /https:\/\/swudb\.com\/deck\/(.*)/;
+
+        let matches = urls.map((e) => swudb_regex.exec(e)).map((t) => t[1]);
+        if(!matches || matches.length == 0){
+            alert("No match found!")
+            return;
+        }
+
+        // Get decklists
+        let decklists = await Promise.all(
+            matches.map(element => getSWUDBDecklist(element))).then((e) => {
+            // e.forEach((e) => {
+            //     console.log(`This deck was authored by ${e.authorName} and contains the following cards:`);
+            //     console.log(e.shuffledDeck.map((card) => `(${card.count} + ${card.sideboardCount}) ${card.card.cardName}${card.card.title?", " + card.card.title:""}`).join("\n"));
+            // });
+            return e;
+        });
+
+        // console.log(decklists);
+
+        // Analyze lists
+        let mutualCards = [];
+        let individualCards = [];
+        // console.log(individualCards);
+        // console.log(decklists[0].shuffledDeck[0])
+        let allIDS = new Set(decklists.map((dl) => dl.shuffledDeck).flat().map((card) => card.card.defaultCardNumber));
+        // console.log(allIDS);
+
+        for(id of allIDS) {
+            let maindeckCount = 3;
+            let sideboardCount = 3;
+            for(deck of decklists){
+                // console.log(deck.shuffledDeck.map((card) => card.card.defaultCardNumber));
+                let cardInDeck = deck.shuffledDeck.filter((c) => c.card.defaultCardNumber === id);
+                if(cardInDeck.length > 0) {
+                    maindeckCount = Math.min(maindeckCount, cardInDeck[0].count);
+                    sideboardCount = Math.min(sideboardCount, cardInDeck[0].sideboardCount);
+                } else {
+                    maindeckCount = 0;
+                    sideboardCount = 0;
+                    break;
+                }
+            }
+            if(maindeckCount > 0 || sideboardCount > 0)
+                mutualCards.push([id, maindeckCount, sideboardCount]);
+        }
+
+        console.log("mc:", mutualCards);
+
+        for(deck of decklists){
+            let cards = deck.shuffledDeck.map((card) => [card.card.defaultCardNumber, card.count, card.sideboardCount]);
+            let nmc = [];
+            for (card of cards) {
+                let mutualCounts = mutualCards.filter((mc) => mc[0] == card[0]);
+                if(mutualCounts.length == 0){
+                    // Not in mutual cards, leave alone
+                    nmc.push(card);
+                } else {
+                    // Check the counts
+                    mutualMainCount = mutualCounts[0][1];
+                    individualMainCount = mutualMainCount - card[1];
+
+                    mutualSideCount = mutualCounts[0][2];
+                    individualSideCount = mutualSideCount - card[2];
+
+                    if (individualMainCount > 0 || individualSideCount > 0) {
+                        nmc.push([card[0], individualMainCount, individualSideCount]);
+                    }
+                }
+            }
+            individualCards.push(nmc);
+            // console.log(`nmc for deck ${deck.deckName}`, nmc);
+            // console.log(deck);
+        }
+
+        console.log(individualCards);
+
+        // Create html
+        // Empty previous HTML
+        let mutualCardlistDiv = document.getElementById("swu-mutual-cards");
+        mutualCardlistDiv.innerHTML = "";
+
+        // Sort and group cards
+
+        let sortedCards = groupCards(decklists[0].shuffledDeck);
+        console.log("sc:", sortedCards);
+
+        for(group of sortedCards) {
+            for(card of group) {
+                let counts = mutualCards.find((c) => c[0] == card.card.defaultCardNumber);
+                if(counts) {
+                    let [id, mc, sc] = counts;
+                    let cardName = card.card.cardName + (card.card.title ? ", " + card.card.title : "");
+                    let swudbUrl = `https://swudb.com/card/${card.card.defaultExpansionAbbreviation}/${id}`
+                    let imgUrl = `https://swudb.com/cdn-cgi/image/quality=30/images${card.card.defaultImagePath.replace("~", "")}`
+            
+                    let cardFragment = cardlistFragment.replace("\{\{ card-link \}\}", swudbUrl);
+                    cardFragment = cardFragment.replace("\{\{ card-name \}\}", cardName);
+                    cardFragment = cardFragment.replace("\{\{ card-count \}\}", mc);
+                    cardFragment = cardFragment.replace("\{ src \}", imgUrl);
+                    mutualCardlistDiv.insertAdjacentHTML('beforeend', cardFragment);
+                }
+            }
+        }
+        // Mutual cards
+        // for(card of mutualCards) {
+        //     // Get the card info
+        //     let cardInfo = decklists[0].shuffledDeck.filter((c) => c.card.defaultCardNumber == card[0])[0];
+        //     // console.log(cardInfo);
+        //     let cardName = cardInfo.card.cardName + (cardInfo.card.title ? ", " + cardInfo.card.title : "");
+        //     let swudbUrl = `https://swudb.com/card/${cardInfo.card.defaultExpansionAbbreviation}/${card[0]}`
+        //     let imgUrl = `https://swudb.com/cdn-cgi/image/quality=30/images${cardInfo.card.defaultImagePath.replace("~", "")}`
+            
+        //     // let fragment = cardboxFragment.replace("\{\{ link-url \}\}", swudbUrl);
+        //     // fragment = fragment.replace("\{\{ img-url \}\}", imgUrl);
+        //     // fragment = fragment.replace("\{\{ card-name \}\}", cardName);
+        //     // fragment = fragment.replace("\{\{ count-main \}\}", card[1]);
+        //     // fragment = fragment.replace("\{\{ count-side \}\}", card[2]);
+        //     // mutualCardlistDiv.insertAdjacentHTML('beforeend', fragment);
+
+        //     let cardFragment = cardlistFragment.replace("\{\{ card-link \}\}", swudbUrl);
+        //     cardFragment = cardFragment.replace("\{\{ card-name \}\}", cardName);
+        //     cardFragment = cardFragment.replace("\{\{ card-count \}\}", card[1]);
+        //     cardFragment = cardFragment.replace("\{ src \}", imgUrl);
+        //     mutualCardlistDiv.insertAdjacentHTML('beforeend', cardFragment);
+        // }
+    }
+
+    function groupCards(cards){
+        // Sorts and groups SWU cards
+        let groups = [[],[],[],[]];
+        let [groundCards, spaceCards, eventCards, upgradeCards] = groups;
+        for(card of cards){
+            console.log(card.card.type)
+            switch (card.card.type) {
+                case 2:
+                    if (card.card.arena == 0) {
+                        groundCards.push(card);
+                        break;
+                    } else {
+                        spaceCards.push(card);
+                        break;
+                    }
+                case 3:
+                    eventCards.push(card);
+                    break;
+                case 4:
+                    upgradeCards.push(card);
+                    break;
+                default:
+                    console.log("Found card without support in sorter:");
+                    console.log(card);
+            }
+        }
+
+        let sortedGroups = [];
+        for(group of groups) {
+            let alphaSort = group.sort((a, b) => 
+                    (a.card.cardName + a.card.title).localeCompare(
+                    (b.card.cardName + b.card.title)
+                ))
+            sortedGroups.push(alphaSort.sort((a, b) => a.card.cost - b.card.cost));
+        }
+        console.log(sortedGroups);
+
+        return [groundCards, spaceCards, eventCards, upgradeCards];
+    }
+
+    async function getSWUDBDecklist(id){
+        var headers = new Headers();
+        headers.append("Accept", "*/*");
+        headers.append("User-Agent", "ncmulder-mtgtools/0.1");
+        let requestOptions = {
+            method: 'GET',
+            headers: headers
+        }
+        let url = `https://morning-fortress-85184-c0ce7ba0fe8b.herokuapp.com/https://swudb.com/api/deck/${id}`;
+        return fetch(url, headers).then((re) => re.json());
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        getInputHTML().then(
+            (e) => inputFragment = e
+        ).then(
+            () => addInput()
+        );
+
+        getCardBoxHTML().then(
+            (e) => cardboxFragment = e
+        );
+
+        getCardlistHTML().then(
+            (e) => cardlistFragment = e
+        );
+    })
+
+    document.addEventListener("mousemove", (e) => {
+        let tooltip = document.getElementById("card-tooltip");
+        tooltip.style.left = e.pageX + 50 + "px";
+        tooltip.style.top = e.pageY - 30 + "px";
+    })
+
+    function toggleTooltip(toggle, src){
+        document.getElementById("card-tooltip").style.display = toggle? "flex" : "none";
+        document.getElementById("card-tooltip-img").src = src;
+    }
+</script>

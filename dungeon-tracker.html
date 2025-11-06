@@ -1,0 +1,182 @@
+---
+layout: default
+title-tag: MTG Dungeon Tracker
+---
+
+Let's create a better dungeon tracker.
+<!-- TODO: 
+ - get a dungeon
+ - make some buttons
+ - align the buttons
+ - functions and feedback
+ - completion
+ - other dungeons
+ - mobile layout
+ - multiple players
+ - effects
+ - sounds
+
+
+ - wilderness hidden mode??
+-->
+
+<div id="dungeon-holder">
+    <img src="assets/images/undercity.png">
+    <div id="dungeon-buttons" class="dungeon-undercity">
+        <div class="dungeon-button secret-entrance" style="grid-area: a;" onclick="dungeonButton(this, 'Secret Entrance')">
+            Secret Entrance
+            <div>
+                Search your library for a basic land card, reveal it,<br/>
+                put it into your hand, then shuffle.
+            </div>
+        </div>
+        <div class="dungeon-button forge" style="grid-area: b;" onclick="dungeonButton(this, 'Forge')">
+            Forge
+            <div>Put two +1/+1 counters<br/>on target creature.</div>
+        </div>
+        <div class="dungeon-button lost-well" style="grid-area: c;" onclick="dungeonButton(this, 'Lost Well')">
+            Lost Well
+            <div>Scry 2.</div>
+        </div>
+        <div class="dungeon-button trap!" style="grid-area: d;" onclick="dungeonButton(this, 'Trap!')">
+            Trap!
+            <div>Target player<br/>loses 5 life.</div>
+        </div>
+        <div class="dungeon-button arena" style="grid-area: e;" onclick="dungeonButton(this, 'Arena')">
+            Arena
+            <div>Goad<br/>target<br/>creature.</div>
+        </div>
+        <div class="dungeon-button stash" style="grid-area: f;" onclick="dungeonButton(this, 'Stash')">
+            Stash
+            <div>Create a<br/>Treasure token.</div>
+        </div>
+        <div class="dungeon-button archives" style="grid-area: g;" onclick="dungeonButton(this, 'Archives')">
+            Archives
+            <div>Draw a card.</div>
+        </div>
+        <div class="dungeon-button catacombs" style="grid-area: h;" onclick="dungeonButton(this, 'Catacombs')">
+            Catacombs
+            <div>
+                Create a 4/1 black<br/>
+                Skeleton creature<br/>
+                token with menace.
+            </div>
+        </div>
+        <div class="dungeon-button throne-of-the-dead-three" style="grid-area: i;" onclick="dungeonButton(this, 'Throne of the Dead Three')">
+            Throne of the Dead Three
+            <div>
+                Reveal the top ten cards of your library. Put a<br/>
+                creature card from among them onto the battlefield<br/>
+                with three +1/+1 counters on it. It gains hexproof<br/>
+                until your next turn. Then shuffle.
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="initiative-tracker">
+    <div id="player-list">
+        <div class="initiative" id="initiative-p-1" onclick="setInitiative(this, '1')">
+            P1
+        </div>
+        <div id="initiative-p-2"  onclick="setInitiative(this, '2')">
+            P2
+        </div>
+    </div>
+    <div id="initiative-add-player" onclick="addPlayer()">
+        Add player
+    </div>
+</div>
+
+
+<div class="footnote"><a href="https://magic-dungeon-tracker.herokuapp.com/about">Inspired by Nati Aker</a></div>
+
+<script>
+    let playerButtonFragment = null;
+    async function getPBFragmentHTML(){
+        return fetch("assets/fragments/dungeon-player-button.html").then((r) => r.text());
+    }
+
+
+    let playerCount = 2;
+    let currentPlayer = 0;
+    let playerLocations = [["Start"], ["Start"]];
+    let playerFinishedDungeons = [[], []];
+
+    let playerColors = [
+        "rgba(0, 0, 255, 1)",
+        "rgba(255, 255, 0, 1)",
+        "rgba(0, 255, 255, 1)",
+        "rgba(255, 0, 0, 1)",
+        "rgba(255, 0, 255, 1)",
+        "rgba(0, 255, 0, 1)"
+    ]
+
+    let dungeonLayouts = {
+        "Undercity": {
+            "Start": ["Secret Entrance"],
+            "Secret Entrance": ["Forge", "Lost Well"],
+            "Forge": ["Trap", "Arena"],
+            "Lost Well": ["Arena", "Stash"],
+            "Trap": ["Archives"],
+            "Arena": ["Archives", "Catacombs"],
+            "Stash": ["Catacombs"],
+            "Archives": ["Throne of the Dead Three"],
+            "Catacombs": ["Throne of the Dead Three"],
+        }
+    }
+
+    function setInitiative(e, player){
+        document.getElementById(`initiative-p-${currentPlayer + 1}`).classList.toggle("initiative");
+        currentPlayer = parseInt(player) - 1;
+        document.getElementById(`initiative-p-${currentPlayer + 1}`).classList.toggle("initiative");
+    }
+
+    function addPlayer(){
+        playerLocations.push(["Start"]);
+        playerFinishedDungeons.push([]);
+
+        let newButton = playerButtonFragment.replaceAll("placeholder-count", ++playerCount);
+        document.getElementById("player-list").insertAdjacentHTML("beforeend", newButton);
+    }
+
+    function getPlayersGradient(players){
+        console.log(players);
+        return `linear-gradient(90deg, ${players.map((p, i) => `${playerColors[p]} ${players.length > 1? 100 / (players.length - 1) * (i) : 100}%`).join(", ")})`
+    }
+
+
+    // TODO: multiple dungeons
+    // TODO: completion?
+    function dungeonButton(e, roomPressed) {
+        // Remove the player from their previous room, add them to the new room.
+        let previousRoom = playerLocations[currentPlayer];
+        playerLocations[currentPlayer] = roomPressed;
+
+        // Updated room players
+        let remainingPlayers = [];
+        let newPlayers = [];
+        for(let i = 0; i < playerCount; i++) {
+            if(playerLocations[i] == previousRoom) {
+                remainingPlayers.push(i);
+            } else if(playerLocations[i] == roomPressed) {
+                newPlayers.push(i);
+            }
+        }
+
+        // Gradients
+        let remainingGradient = remainingPlayers.length > 0 ? getPlayersGradient(remainingPlayers) : "rgba(129, 129, 129, 0.644)";
+        let newGradient = getPlayersGradient(newPlayers);
+
+        // Set elements
+        if(previousRoom != "Start") {
+            let className = `dungeon-button ${previousRoom.toLowerCase().split(" ").join("-")}`;
+            document.getElementsByClassName(className).item(0).style.background = remainingGradient;
+        }
+        e.style.background = newGradient;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        getPBFragmentHTML().then((f) => playerButtonFragment = f);
+    })
+</script>

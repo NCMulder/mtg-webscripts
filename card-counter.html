@@ -1,0 +1,189 @@
+---
+layout: default
+title-tag: Counter 2
+---
+<div id="set-info">
+    <svg class="setSymbol"></svg>Shadows over Innistrad (2016)
+</div>
+<div class="card main">
+    <img id="card-main-img" src="https://cards.scryfall.io/large/front/7/b/7b55e5ab-f437-477d-8c21-eb96f03f089e.jpg?1580014891"/>
+</div>
+
+<div class="card-carousel">
+    carousel????
+    <ul id="card-list">
+        <li>
+            <img id="card-main-img" src="https://cards.scryfall.io/large/front/7/b/7b55e5ab-f437-477d-8c21-eb96f03f089e.jpg?1580014891"/> 
+            <div>
+                <h3>Roar of the Wurm</h1>
+                <h3>2</h3>
+                <span>1.23</span>
+            </div> 
+        </li>
+        <li>
+            <img id="card-main-img" src="https://cards.scryfall.io/large/front/7/b/7b55e5ab-f437-477d-8c21-eb96f03f089e.jpg?1580014891"/> 
+            <div>
+                <h3>Roar of the Wurm</h1>
+                <h3>2</h3>
+                <span>1.23</span>
+            </div> 
+        </li>
+        <li>
+            <img id="card-main-img" src="https://cards.scryfall.io/large/front/7/b/7b55e5ab-f437-477d-8c21-eb96f03f089e.jpg?1580014891"/> 
+            <div>
+                <h3>Roar of the Wurm</h1>
+                <h3>2</h3>
+                <span>1.23</span>
+            </div> 
+        </li>
+        
+        <li>
+            <img id="card-main-img" src="https://cards.scryfall.io/large/front/7/b/7b55e5ab-f437-477d-8c21-eb96f03f089e.jpg?1580014891"/>  
+        </li>
+    </ul>
+</div>
+<div class="count" id="current-count">
+0
+</div>
+
+<script>
+
+    
+let cardCarouselFragment = null;
+async function getCCFragmentHTML(){
+    return fetch("card-carousel-fragment.html").then((r) => r.text());
+}
+
+let setCode = "SOI";
+
+let currentSetCards = {
+    "roarofthewurm": "https://cards.scryfall.io/large/front/7/b/7b55e5ab-f437-477d-8c21-eb96f03f089e.jpg?1580014891",
+    "roots": "https://cards.scryfall.io/large/front/e/1/e10e40f1-2212-402b-a1b6-31c75a2aa816.jpg?1580014898",
+    "sealofstrength": "https://cards.scryfall.io/large/front/5/5/559c3909-51e3-4a3e-8570-107ffe69e30d.jpg?1580014904",
+    "sentinelspider": "https://cards.scryfall.io/large/front/c/9/c9ddd780-29e5-4dbd-a371-5e46f63157d4.jpg?1580014911"
+}
+
+let currentCard = 0;
+let currentCardName = "roarofthewurm";
+
+let cardCounts = {
+    "roarofthewurm": 0,
+    "roots": 10,
+    "sealofstrength": 2,
+    "sentinelspider": 1,
+}
+
+function changeCard(i){
+
+    let cardNames = Object.keys(currentSetCards);
+    if((i && currentCard >= cardNames.length - 1) || (!i && currentCard == 0)){
+        return;
+    }
+
+    currentCard = currentCard + (i? 1 : -1);
+    currentCardName = cardNames[currentCard];
+    let cC = currentSetCards[currentCardName];
+    let imageURL = cC["card_faces"]? cC["card_faces"][0]["image_uris"]["normal"] : cC["image_uris"]["normal"];
+    document.getElementById("card-main-img").src = imageURL;
+}
+
+
+document.addEventListener("keypress", (e) => {
+    if(e.key == "w"){
+        cardCounts[currentCardName] += 1;
+    } else if (e.key == "s") {
+        cardCounts[currentCardName] -= cardCounts[currentCardName] > 0?  1 : 0;
+    } else if (e.key == "d") {
+        changeCard(true);
+    } else if (e.key == "a") {
+        changeCard(false);
+    }
+    document.getElementById("current-count").innerHTML = cardCounts[currentCardName];
+    // console.log(e);
+})
+
+
+let sets = {};
+
+async function getCardsForSet(setcode){
+    var headers = new Headers();
+    headers.append("User-Agent", "cards-by-set/0.1");
+    headers.append("Accept", "*/*");
+    let requestOptions = {
+        method: 'GET',
+        headers: headers
+    }
+
+    let url = `https://api.scryfall.com/sets/${setcode}`;
+
+    let setInfo;
+    // get the set info
+    let re = await fetch(url, headers).then(async (r) => {
+        await r.json().then(async (setInfo) => {
+            // get the set cards
+            let cards = [];
+            let nextPage = setInfo["search_uri"];
+            while(nextPage) {
+                let ci = await fetch(nextPage, headers).then((r) => {
+                    r.json().then((j) => {
+                        cards.push(...j["data"]);
+                        if(j["has_more"]) {
+                            nextPage = j["next_page"];
+                        } else {
+                            nextPage = "";
+                        }
+                    });
+                });
+            }
+
+            cards.map
+
+            sets[setcode] = {
+                set_info: setInfo,
+                cards: Object.fromEntries(cards.map((c) => [c["name"], c]))
+            };
+
+            
+            currentSetCards = sets[setCode]["cards"];
+            currentCardName = Object.keys(sets[setCode]["cards"])[0];
+            changeCard(true);
+            console.log(sets);
+        })
+    });
+}
+
+async function populateCardList(setCode) {
+    // get set
+    let set = sets[setCode];
+    let cards = set["cards"];
+
+    // empty current card list
+    let cardCarousel = document.getElementById("card-list");
+    cardCarousel.innerHTML = "";
+
+    // fill card list
+    Object.entries(cards).forEach((cardElement, cn) => {
+        let [cardName, card] = cardElement;
+
+        let imageURL = card["card_faces"]? card["card_faces"][0]["image_uris"]["normal"] : card["image_uris"]["normal"];
+    
+
+        let cF = cardCarouselFragment.replace("placeholder-imageurl", imageURL);
+        cF = cF.replace("placeholder-cardname", cardName);
+        cF = cF.replace("placeholder-cardcount", cn);
+        cF = cF.replace("placeholder-cardprice", `${card["prices"]["eur"]}`);
+
+        cardCarousel.insertAdjacentHTML("beforeend", cF);
+        // console.log(name, card);
+    })
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+        getCCFragmentHTML().then((f) => cardCarouselFragment = f);
+        getCardsForSet(setCode).then((cards) => {
+            console.log("cards", cards);
+            populateCardList(setCode);
+        });
+    })
+
+</script>
