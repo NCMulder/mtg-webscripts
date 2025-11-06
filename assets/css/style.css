@@ -595,57 +595,101 @@ body {
 #dungeon-holder {
     margin: 10px auto;
     width: 80vw;
-    height: 60vh;
+    /* height: 60vh; */
     /* overflow: hidden; */
     /* background-size: contain;
     background-repeat:no-repeat;
     background-image: url("/assets/images/undercity.png"); */
 }
 
-#dungeon-holder > img {
+.dungeon-spec > img {
     position: absolute;
-    max-width: 80%;
-    max-height: 60%;
+    max-width: 100%;
+    z-index: -10;
+    left: 0;
+    top:0;
+    /* max-height: 60%; */
     /* background-size: cover;
     background-image: url("assets/images/undercity.png"); */
+}
+
+#dungeon-selector {
+    /* display: flex; */
+    margin: 10px 20px;
+}
+
+#dungeon-selector>img {
+    width: 100%;
 }
 
 #dungeon-buttons {
     position: relative;
     /* height: 100%; */
     width: 84%;
-    aspect-ratio: 0.85;
+    aspect-ratio: 0.82;
     /* z-index: 10; */
-    padding: 28% 8% 13%;
+    padding: 20% 8% 17%;
 }
 
 .dungeon-button {
-    display: inline;
+    /* display: inline; */
     background: rgba(129, 129, 129, 0.644);
     border: 1px solid rgba(211, 101, 255, 0.801);
     /* vertical-align: top; */
+    align-content: center;
     text-align: center;
-    margin: calc(auto - 5px);
     font-size: 0.75em;
     font-weight: 600;
+    user-select: none;
+}
+
+.dungeon-button:active {
+    background: rgba(124, 8, 118, 0.377);
 }
 
 .dungeon-button>div {
     font-size: 0.55em;
 }
 
-#dungeon-buttons>div:active {
-    background: rgba(124, 8, 118, 0.377);
+.dungeon-spec {
+    display: none;
+    height: 100%;
 }
 
 .dungeon-undercity {
-    display: grid;
     grid-template: 
     "a a a a a a" 0.85fr
     "b b b c c c" 0.9fr
     "d d e e f f" 1.2fr
     "g g g h h h" 1.2fr
     "i i i i i i" 1.4fr / 1fr 1fr .7fr .7fr 1fr 1fr;
+}
+
+.dungeon-annihilation {
+    grid-template:
+    "a a" 0.8fr
+    "b c" 1.0fr
+    "d c" 1.0fr
+    "e e" 1.0fr / 1fr 1fr;
+}
+
+.dungeon-mad-mage {
+    grid-template:
+    "a a" 1fr
+    "b b" 1fr
+    "c d" 2fr
+    "e e" 1fr
+    "f g" 2fr
+    "h h" 1fr
+    "i i" 1.3fr / 1fr 1fr;
+}
+
+.dungeon-phandelver {
+    grid-template:
+    "a a a a a a" 1fr
+    "b b b c c c" 1.3fr
+    "d d e e f f" 1.5fr
+    "g g g g g g" 1 fr / 1fr 1fr .7fr .7fr 1fr 1fr;
 }
 
 

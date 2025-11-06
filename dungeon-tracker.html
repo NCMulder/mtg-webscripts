@@ -3,7 +3,6 @@ layout: default
 title-tag: MTG Dungeon Tracker
 ---
 
-Let's create a better dungeon tracker.
 <!-- TODO: 
  - get a dungeon
  - make some buttons
@@ -21,56 +20,203 @@ Let's create a better dungeon tracker.
 -->
 
 <div id="dungeon-holder">
-    <img src="assets/images/undercity.png">
-    <div id="dungeon-buttons" class="dungeon-undercity">
-        <div class="dungeon-button secret-entrance" style="grid-area: a;" onclick="dungeonButton(this, 'Secret Entrance')">
+    <div id="dungeon-buttons">
+        <div class="dungeon-spec dungeon-undercity" style="display: grid">
+            <img src="assets/images/undercity.png">
+            <div class="dungeon-button secret-entrance" style="grid-area: a;" onclick="dungeonButton(this, 'Secret Entrance')">
             Secret Entrance
             <div>
                 Search your library for a basic land card, reveal it,<br/>
                 put it into your hand, then shuffle.
             </div>
-        </div>
-        <div class="dungeon-button forge" style="grid-area: b;" onclick="dungeonButton(this, 'Forge')">
-            Forge
-            <div>Put two +1/+1 counters<br/>on target creature.</div>
-        </div>
-        <div class="dungeon-button lost-well" style="grid-area: c;" onclick="dungeonButton(this, 'Lost Well')">
-            Lost Well
-            <div>Scry 2.</div>
-        </div>
-        <div class="dungeon-button trap!" style="grid-area: d;" onclick="dungeonButton(this, 'Trap!')">
-            Trap!
-            <div>Target player<br/>loses 5 life.</div>
-        </div>
-        <div class="dungeon-button arena" style="grid-area: e;" onclick="dungeonButton(this, 'Arena')">
-            Arena
-            <div>Goad<br/>target<br/>creature.</div>
-        </div>
-        <div class="dungeon-button stash" style="grid-area: f;" onclick="dungeonButton(this, 'Stash')">
-            Stash
-            <div>Create a<br/>Treasure token.</div>
-        </div>
-        <div class="dungeon-button archives" style="grid-area: g;" onclick="dungeonButton(this, 'Archives')">
-            Archives
-            <div>Draw a card.</div>
-        </div>
-        <div class="dungeon-button catacombs" style="grid-area: h;" onclick="dungeonButton(this, 'Catacombs')">
-            Catacombs
-            <div>
-                Create a 4/1 black<br/>
-                Skeleton creature<br/>
-                token with menace.
+            </div>
+            <div class="dungeon-button forge" style="grid-area: b;" onclick="dungeonButton(this, 'Forge')">
+                Forge
+                <div>Put two +1/+1 counters<br/>on target creature.</div>
+            </div>
+            <div class="dungeon-button lost-well" style="grid-area: c;" onclick="dungeonButton(this, 'Lost Well')">
+                Lost Well
+                <div>Scry 2.</div>
+            </div>
+            <div class="dungeon-button trap!" style="grid-area: d;" onclick="dungeonButton(this, 'Trap!')">
+                Trap!
+                <div>Target player<br/>loses 5 life.</div>
+            </div>
+            <div class="dungeon-button arena" style="grid-area: e;" onclick="dungeonButton(this, 'Arena')">
+                Arena
+                <div>Goad<br/>target<br/>creature.</div>
+            </div>
+            <div class="dungeon-button stash" style="grid-area: f;" onclick="dungeonButton(this, 'Stash')">
+                Stash
+                <div>Create a<br/>Treasure token.</div>
+            </div>
+            <div class="dungeon-button archives" style="grid-area: g;" onclick="dungeonButton(this, 'Archives')">
+                Archives
+                <div>Draw a card.</div>
+            </div>
+            <div class="dungeon-button catacombs" style="grid-area: h;" onclick="dungeonButton(this, 'Catacombs')">
+                Catacombs
+                <div>
+                    Create a 4/1 black<br/>
+                    Skeleton creature<br/>
+                    token with menace.
+                </div>
+            </div>
+            <div class="dungeon-button throne-of-the-dead-three" style="grid-area: i;" onclick="dungeonButton(this, 'Throne of the Dead Three')">
+                Throne of the Dead Three
+                <div>
+                    Reveal the top ten cards of your library. Put a<br/>
+                    creature card from among them onto the battlefield<br/>
+                    with three +1/+1 counters on it. It gains hexproof<br/>
+                    until your next turn. Then shuffle.
+                </div>
             </div>
         </div>
-        <div class="dungeon-button throne-of-the-dead-three" style="grid-area: i;" onclick="dungeonButton(this, 'Throne of the Dead Three')">
-            Throne of the Dead Three
-            <div>
-                Reveal the top ten cards of your library. Put a<br/>
-                creature card from among them onto the battlefield<br/>
-                with three +1/+1 counters on it. It gains hexproof<br/>
-                until your next turn. Then shuffle.
+        <div class="dungeon-spec dungeon-annihilation">
+            <img src="assets/images/tomb-of-annihilation.png">
+            <div class="dungeon-button trapped-entry" style="grid-area: a;" onclick="dungeonButton(this, 'Trapped Entry')">
+                Trapped Entry
+                <div>
+                    Each player loses 1 life.
+                </div>
+            </div>
+            <div class="dungeon-button veils-of-fear" style="grid-area: b;" onclick="dungeonButton(this, 'Veils of Fear')">
+                Veils of Fear
+                <div>
+                    Each player loses<br />
+                    2 life unless they<br />
+                    discard a card.
+                </div>
+            </div>
+            <div class="dungeon-button oubliette" style="grid-area: c;" onclick="dungeonButton(this, 'Oubliette')">
+                Oubliette
+                <div>
+                    Discard a card and<br />
+                    sacrifice an artifact, a<br />
+                    creature, and a land.
+                </div>
+            </div>
+            <div class="dungeon-button sandfall-cell" style="grid-area: d;" onclick="dungeonButton(this, 'Sandfall Cell')">
+                Sandfall Cell
+                <div>
+                    Each player loses<br />
+                    2 life unless they<br />
+                    sacrifice an artifact,<br />
+                    a creature, or a land.
+                </div>
+            </div>
+            <div class="dungeon-button cradle-of-the-death-god" style="grid-area: e;" onclick="dungeonButton(this, 'Cradle of the Death God')">
+                Cradle of the Death God
+                <div>
+                    Create The Atropal, a legendary 4/4 black<br />
+                    God Horror creature token with deathtouch.
+                </div>
             </div>
         </div>
+        <div class="dungeon-spec dungeon-mad-mage">
+            <img src="assets/images/dungeon-of-the-mad-mage.png">
+            <div class="dungeon-button yawning-portal" style="grid-area: a;" onclick="dungeonButton(this, 'Yawning Portal')">
+                Yawning Portal
+                <div>You gain one life.</div>
+            </div>
+            <div class="dungeon-button dungeon-level" style="grid-area: b;" onclick="dungeonButton(this, 'Dungeon Level')">
+                Dungeon Level
+                <div>Scry 1.</div>
+            </div>
+            <div class="dungeon-button goblin-bazaar" style="grid-area: c;" onclick="dungeonButton(this, 'Goblin Bazaar')">
+                Goblin Bazaar
+                <div>
+                    Creata a<br />
+                    treasure token.
+                </div>
+            </div>
+            <div class="dungeon-button twisted-caverns" style="grid-area: d;" onclick="dungeonButton(this, 'Twisted Caverns')">
+                Twisted Caverns
+                <div>
+                    Target creature can't<br />
+                    attack until your<br />
+                    next turn.
+                </div>
+            </div>
+            <div class="dungeon-button lost-level" style="grid-area: e;" onclick="dungeonButton(this, 'Lost Level')">
+                Lost Level
+                <div>Scry 2.</div>
+            </div>
+            <div class="dungeon-button runestone-caverns" style="grid-area: f;" onclick="dungeonButton(this, 'Runestone Caverns')">
+                Runestone Caverns
+                <div>
+                    Exile the top two<br />
+                    cards of your library.<br />
+                    You may play them.
+                </div>
+            </div>
+            <div class="dungeon-button muiral's-graveyard" style="grid-area: g;" onclick="dungeonButton(this, 'Muiral\'s Graveyard')">
+                Muiral's Graveyard
+                <div>
+                    Create two 1/1<br />
+                    black skeleton<br />
+                    creature tokens.
+                </div>
+            </div>
+            <div class="dungeon-button deep-mines" style="grid-area: h;" onclick="dungeonButton(this, 'Deep Mines')">
+                Deep Mines
+                <div>Scry 3.</div>
+            </div>
+            <div class="dungeon-button mad-wizard's-lair" style="grid-area: i;" onclick="dungeonButton(this, 'Mad Wizard\'s Lair')">
+                Mad Wizard's Lair
+                <div>
+                    Draw three cards and reveal them. You may<br />
+                    cast one of them without paying its mana cost.
+                </div>
+            </div>
+        </div>
+        <div class="dungeon-spec dungeon-phandelver">
+            <img src="assets/images/tomb-of-annihilation.png">
+            <div class="dungeon-button trapped-entry" style="grid-area: a;" onclick="dungeonButton(this, 'Trapped Entry')">
+                Trapped Entry
+                <div>
+                    Each player loses 1 life.
+                </div>
+            </div>
+            <div class="dungeon-button veils-of-fear" style="grid-area: b;" onclick="dungeonButton(this, 'Veils of Fear')">
+                Veils of Fear
+                <div>
+                    Each player loses<br />
+                    2 life unless they<br />
+                    discard a card.
+                </div>
+            </div>
+            <div class="dungeon-button oubliette" style="grid-area: c;" onclick="dungeonButton(this, 'Oubliette')">
+                Oubliette
+                <div>
+                    Discard a card and<br />
+                    sacrifice an artifact, a<br />
+                    creature, and a land.
+                </div>
+            </div>
+            <div class="dungeon-button sandfall-cell" style="grid-area: d;" onclick="dungeonButton(this, 'Sandfall Cell')">
+                Sandfall Cell
+                <div>
+                    Each player loses<br />
+                    2 life unless they<br />
+                    sacrifice an artifact,<br />
+                    a creature, or a land.
+                </div>
+            </div>
+            <div class="dungeon-button cradle-of-the-death-god" style="grid-area: e;" onclick="dungeonButton(this, 'Cradle of the Death God')">
+                Cradle of the Death God
+                <div>
+                    Create The Atropal, a legendary 4/4 black<br />
+                    God Horror creature token with deathtouch.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="dungeon-selector">
+        <img id="dungeon-selector undercity" onclick="selectDungeon('undercity')" src="assets/images/button-undercity.png" style="display: none;"/>
+        <img id="dungeon-selector annihilation" onclick="selectDungeon('annihilation')" src="assets/images/button-annihilation.png" />
+        <img id="dungeon-selector mad-mage" onclick="selectDungeon('mad-mage')" src="assets/images/button-mad-mage.png" />
+        <img id="dungeon-selector phandelver" onclick="selectDungeon('phandelver')" src="assets/images/button-phandelver.png" />
     </div>
 </div>
 
@@ -97,11 +243,11 @@ Let's create a better dungeon tracker.
         return fetch("assets/fragments/dungeon-player-button.html").then((r) => r.text());
     }
 
-
     let playerCount = 2;
     let currentPlayer = 0;
     let playerLocations = [["Start"], ["Start"]];
     let playerFinishedDungeons = [[], []];
+    let currentDungeon = "undercity";
 
     let playerColors = [
         "rgba(0, 0, 255, 1)",
@@ -132,7 +278,24 @@ Let's create a better dungeon tracker.
         document.getElementById(`initiative-p-${currentPlayer + 1}`).classList.toggle("initiative");
     }
 
+    function selectDungeon(dungeon){
+        // Hide current dungeon and show selector
+        document.getElementById(`dungeon-selector ${currentDungeon}`).style.display = "";
+        document.getElementsByClassName(`dungeon-spec dungeon-${currentDungeon}`).item(0).style.display = ""
+
+        // Show new dungeon and hide selector
+        document.getElementById(`dungeon-selector ${dungeon}`).style.display = "none";
+        document.getElementsByClassName(`dungeon-spec dungeon-${dungeon}`).item(0).style.display = "grid"
+    
+        currentDungeon = dungeon;
+    }
+
     function addPlayer(){
+        if(playerCount > 5){
+            alert("Max player count is 6");
+            return;
+        }
+
         playerLocations.push(["Start"]);
         playerFinishedDungeons.push([]);
 
@@ -141,7 +304,6 @@ Let's create a better dungeon tracker.
     }
 
     function getPlayersGradient(players){
-        console.log(players);
         return `linear-gradient(90deg, ${players.map((p, i) => `${playerColors[p]} ${players.length > 1? 100 / (players.length - 1) * (i) : 100}%`).join(", ")})`
     }
 
