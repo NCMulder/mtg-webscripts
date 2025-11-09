@@ -171,49 +171,60 @@ title-tag: MTG Dungeon Tracker
             </div>
         </div>
         <div class="dungeon-spec dungeon-phandelver">
-            <img src="assets/images/tomb-of-annihilation.png">
-            <div class="dungeon-button trapped-entry" style="grid-area: a;" onclick="dungeonButton(this, 'Trapped Entry')">
-                Trapped Entry
+            <img src="assets/images/lost-mine-of-phandelver.png">
+            <div class="dungeon-button cave-entrance" style="grid-area: a;" onclick="dungeonButton(this, 'Cave Entrance')">
+                Cave Entrance
+                <div>Scry 1.</div>
+            </div>
+            <div class="dungeon-button goblin-lair" style="grid-area: b;" onclick="dungeonButton(this, 'Goblin Lair')">
+                Goblin Lair
                 <div>
-                    Each player loses 1 life.
+                    Create a 1/1 red<br />
+                    Goblin creature token
                 </div>
             </div>
-            <div class="dungeon-button veils-of-fear" style="grid-area: b;" onclick="dungeonButton(this, 'Veils of Fear')">
-                Veils of Fear
+            <div class="dungeon-button mine-tunnels" style="grid-area: c;" onclick="dungeonButton(this, 'Mine Tunnels')">
+                Mine Tunnels
                 <div>
-                    Each player loses<br />
-                    2 life unless they<br />
-                    discard a card.
+                    Create a<br />
+                    Treasure token
                 </div>
             </div>
-            <div class="dungeon-button oubliette" style="grid-area: c;" onclick="dungeonButton(this, 'Oubliette')">
-                Oubliette
+            <div class="dungeon-button storeroom" style="grid-area: d;" onclick="dungeonButton(this, 'Storeroom')">
+                Storeroom
                 <div>
-                    Discard a card and<br />
-                    sacrifice an artifact, a<br />
-                    creature, and a land.
+                    Put a +1/+1<br />
+                    counter<br />
+                    on target<br />
+                    creature.
                 </div>
             </div>
-            <div class="dungeon-button sandfall-cell" style="grid-area: d;" onclick="dungeonButton(this, 'Sandfall Cell')">
-                Sandfall Cell
+            <div class="dungeon-button dark-pool" style="grid-area: e;" onclick="dungeonButton(this, 'Dark Pool')">
+                Dark Pool
                 <div>
-                    Each player loses<br />
-                    2 life unless they<br />
-                    sacrifice an artifact,<br />
-                    a creature, or a land.
+                    Each opponent<br />
+                    loses 1 life and<br />
+                    you gain 1 life.
                 </div>
             </div>
-            <div class="dungeon-button cradle-of-the-death-god" style="grid-area: e;" onclick="dungeonButton(this, 'Cradle of the Death God')">
-                Cradle of the Death God
+            <div class="dungeon-button fungi-cavern" style="grid-area: f;" onclick="dungeonButton(this, 'Fungi Cavern')">
+                Fungi<br />Cavern
                 <div>
-                    Create The Atropal, a legendary 4/4 black<br />
-                    God Horror creature token with deathtouch.
+                    Target<br />
+                    creature gets<br />
+                    -4/-0 until<br />
+                    your next<br />
+                    turn.
                 </div>
+            </div>
+            <div class="dungeon-button temple-of-dumathoin" style="grid-area: g;" onclick="dungeonButton(this, 'Temple of Dumathoin')">
+                Temple of Dumathoin
+                <div>Draw a card.</div>
             </div>
         </div>
     </div>
     <div id="dungeon-selector">
-        <img id="dungeon-selector undercity" onclick="selectDungeon('undercity')" src="assets/images/button-undercity.png" style="display: none;"/>
+        <img id="dungeon-selector undercity" onclick="selectDungeon('undercity')" src="assets/images/button-undercity.png" class="disabled"/>
         <img id="dungeon-selector annihilation" onclick="selectDungeon('annihilation')" src="assets/images/button-annihilation.png" />
         <img id="dungeon-selector mad-mage" onclick="selectDungeon('mad-mage')" src="assets/images/button-mad-mage.png" />
         <img id="dungeon-selector phandelver" onclick="selectDungeon('phandelver')" src="assets/images/button-phandelver.png" />
@@ -222,7 +233,7 @@ title-tag: MTG Dungeon Tracker
 
 <div id="initiative-tracker">
     <div id="player-list">
-        <div class="initiative" id="initiative-p-1" onclick="setInitiative(this, '1')">
+        <div class="active" id="initiative-p-1" onclick="setInitiative(this, '1')">
             P1
         </div>
         <div id="initiative-p-2"  onclick="setInitiative(this, '2')">
@@ -273,18 +284,41 @@ title-tag: MTG Dungeon Tracker
     }
 
     function setInitiative(e, player){
-        document.getElementById(`initiative-p-${currentPlayer + 1}`).classList.toggle("initiative");
-        currentPlayer = parseInt(player) - 1;
-        document.getElementById(`initiative-p-${currentPlayer + 1}`).classList.toggle("initiative");
+        let newPlayer = parseInt(player) - 1;
+        let playerMarkers = document.getElementById("player-list").children;
+
+        if(newPlayer == currentPlayer){
+            Array.from(playerMarkers).forEach((marker) => {
+                if(marker.id.includes(`p-${newPlayer+1}`)){
+                    marker.classList.add("monarch");
+                } else {
+                    marker.classList.remove("monarch");
+                }
+            })
+        }
+
+        if(currentDungeon == "undercity") {
+            Array.from(playerMarkers).forEach((marker) => {
+                if(marker.id.includes(`p-${newPlayer+1}`)){
+                    marker.classList.add("initiative");
+                } else {
+                    marker.classList.remove("initiative");
+                }
+            })
+        }
+
+        document.getElementById(`initiative-p-${currentPlayer + 1}`).classList.toggle("active");
+        currentPlayer = newPlayer;
+        document.getElementById(`initiative-p-${currentPlayer + 1}`).classList.toggle("active");
     }
 
     function selectDungeon(dungeon){
         // Hide current dungeon and show selector
-        document.getElementById(`dungeon-selector ${currentDungeon}`).style.display = "";
+        document.getElementById(`dungeon-selector ${currentDungeon}`).classList.toggle("disabled");
         document.getElementsByClassName(`dungeon-spec dungeon-${currentDungeon}`).item(0).style.display = ""
 
         // Show new dungeon and hide selector
-        document.getElementById(`dungeon-selector ${dungeon}`).style.display = "none";
+        document.getElementById(`dungeon-selector ${dungeon}`).classList.toggle("disabled");
         document.getElementsByClassName(`dungeon-spec dungeon-${dungeon}`).item(0).style.display = "grid"
     
         currentDungeon = dungeon;
@@ -304,13 +338,14 @@ title-tag: MTG Dungeon Tracker
     }
 
     function getPlayersGradient(players){
-        return `linear-gradient(90deg, ${players.map((p, i) => `${playerColors[p]} ${players.length > 1? 100 / (players.length - 1) * (i) : 100}%`).join(", ")})`
+        return `linear-gradient(135deg, ${players.map((p, i) => `${playerColors[p]} ${players.length > 1? 100 / (players.length - 1) * (i) : 100}%`).join(", ")})`
     }
 
 
     // TODO: multiple dungeons
     // TODO: completion?
     function dungeonButton(e, roomPressed) {
+        console.log("clickety")
         // Remove the player from their previous room, add them to the new room.
         let previousRoom = playerLocations[currentPlayer];
         playerLocations[currentPlayer] = roomPressed;
@@ -327,15 +362,15 @@ title-tag: MTG Dungeon Tracker
         }
 
         // Gradients
-        let remainingGradient = remainingPlayers.length > 0 ? getPlayersGradient(remainingPlayers) : "rgba(129, 129, 129, 0.644)";
+        let remainingGradient = remainingPlayers.length > 0 ? getPlayersGradient(remainingPlayers) : "linear-gradient(90deg, rgba(0,0,0,0))";
         let newGradient = getPlayersGradient(newPlayers);
 
         // Set elements
         if(previousRoom != "Start") {
             let className = `dungeon-button ${previousRoom.toLowerCase().split(" ").join("-")}`;
-            document.getElementsByClassName(className).item(0).style.background = remainingGradient;
+            document.getElementsByClassName(className).item(0).style.borderImageSource = remainingGradient;
         }
-        e.style.background = newGradient;
+        e.style.borderImageSource = newGradient;
     }
 
     document.addEventListener("DOMContentLoaded", () => {

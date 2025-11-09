@@ -614,12 +614,20 @@ body {
 }
 
 #dungeon-selector {
-    /* display: flex; */
+    display: flex;
+    flex-direction: column;
     margin: 10px 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+#dungeon-selector>img.disabled{
+    opacity: .5;
 }
 
 #dungeon-selector>img {
-    width: 100%;
+    margin: 1px 0px;
+    width: 80%;
 }
 
 #dungeon-buttons {
@@ -628,23 +636,26 @@ body {
     width: 84%;
     aspect-ratio: 0.82;
     /* z-index: 10; */
-    padding: 20% 8% 17%;
+    padding: 20% 8% 12%;
 }
 
 .dungeon-button {
     /* display: inline; */
-    background: rgba(129, 129, 129, 0.644);
-    border: 1px solid rgba(211, 101, 255, 0.801);
+    /* background: rgba(129, 129, 129, 0.644); */
+    border: 2px solid rgba(0, 0, 0, 0);
+    border-image-slice: 1;
+    border-width: 5px;
     /* vertical-align: top; */
     align-content: center;
     text-align: center;
     font-size: 0.75em;
     font-weight: 600;
     user-select: none;
+    font-size:0;
 }
 
 .dungeon-button:active {
-    background: rgba(124, 8, 118, 0.377);
+    background: rgba(240, 240, 240, 0.062);
 }
 
 .dungeon-button>div {
@@ -654,13 +665,17 @@ body {
 .dungeon-spec {
     display: none;
     height: 100%;
+    padding-bottom: 8.5%;
 }
 
 .dungeon-undercity {
+    margin-top: 8.5%;
+    margin-bottom: 1%;
+    padding-bottom: 0%;
     grid-template: 
     "a a a a a a" 0.85fr
     "b b b c c c" 0.9fr
-    "d d e e f f" 1.2fr
+    "d d e e f f" 1.15fr
     "g g g h h h" 1.2fr
     "i i i i i i" 1.4fr / 1fr 1fr .7fr .7fr 1fr 1fr;
 }
@@ -681,15 +696,15 @@ body {
     "e e" 1fr
     "f g" 2fr
     "h h" 1fr
-    "i i" 1.3fr / 1fr 1fr;
+    "i i" 1.5fr / 1fr 1fr;
 }
 
 .dungeon-phandelver {
     grid-template:
-    "a a a a a a" 1fr
-    "b b b c c c" 1.3fr
-    "d d e e f f" 1.5fr
-    "g g g g g g" 1 fr / 1fr 1fr .7fr .7fr 1fr 1fr;
+    "a a a a a a" 1.05fr
+    "b b b c c c" 1.25fr
+    "d d e e f f" 1.6fr
+    "g g g g g g" 1fr / 1fr .7fr 1fr 1fr .7fr 1fr;
 }
 
 
@@ -712,6 +727,7 @@ body {
 }
 
 #player-list>div {
+    position: relative;
     display: flex;
     border: 3px solid rgba(51, 51, 51, 0.116);
     border-radius: 4px;
@@ -723,8 +739,24 @@ body {
     font-weight: bold;
 }
 
-#player-list>div.initiative{
+#player-list>div.active{
     opacity: 1;
+}
+
+#player-list>div.initiative::after{
+    content: url("/assets/images/initiative-marker.png");
+    position:absolute;
+    top:-60px;
+    left:-60px;
+    transform: scale(.2) rotate(-40deg);
+}
+
+#player-list>div.monarch::before{
+    content: url("/assets/images/monarch-marker.png");
+    position:absolute;
+    top:-133px;
+    left:-100px;
+    transform: scale(.1) rotate(40deg);
 }
 
 #player-list>div:nth-child(1){
