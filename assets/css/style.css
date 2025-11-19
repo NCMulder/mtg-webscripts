@@ -729,19 +729,32 @@ body {
     font-size: 0.55em;
 }
 
-#dungeon-selector {
+.dungeon-settings {
+    max-width: 80%;
+    position: relative;
+    margin: 5px auto;
+}
+
+#dungeon-selectors {
     display: flex;
     flex-direction: column;
-    margin: 10px 20px;
+    margin: 10px 10px;
     justify-content: center;
     align-items: center;
 }
 
-#dungeon-selector>img{
-    cursor: pointer;
+.dungeon-selector {
+    display: grid;
+    grid-template-columns: 1fr 10fr 1fr;
+    grid-template-areas: '. button locator';
 }
 
-#dungeon-selector>img.disabled{
+.dungeon-selector>img{
+    cursor: pointer;
+    grid-area: 'button';
+}
+
+.dungeon-selector.disabled{
     opacity: .5;
     cursor: default;
 }
@@ -754,6 +767,27 @@ body {
             drop-shadow(-1px 1px 0 white)
             drop-shadow(1px -1px 0 white)
             drop-shadow(-1px -1px 0 white); */
+}
+
+.dungeon-locator {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-area: 'locator';
+}
+
+.dungeon-locator>div {
+    min-width: 4px;
+    min-height: 4px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.432);
+    margin: auto;
+    padding: 4px;
+    opacity: 0;
+}
+
+.dungeon-locator>div.active {
+    opacity: 1;
 }
 
 #player-tracker {
@@ -872,21 +906,28 @@ body {
     box-sizing: unset;
 }
 
-#player-list>div:nth-child(1){
+#player-list>div:nth-child(1),
+.dungeon-locator>.dl-p1
+{
     background-color: rgba(0, 0, 255, 1);
 }
-#player-list>div:nth-child(2){
+#player-list>div:nth-child(2),
+.dungeon-locator>.dl-p2{
     background-color: rgba(255, 255, 0, 1);
 }
-#player-list>div:nth-child(3){
+#player-list>div:nth-child(3),
+.dungeon-locator>.dl-p3{
     background-color: rgba(0, 255, 255, 1);
 }
-#player-list>div:nth-child(4){
+#player-list>div:nth-child(4),
+.dungeon-locator>.dl-p4{
     background-color: rgba(255, 0, 0, 1);
 }
-#player-list>div:nth-child(5){
+#player-list>div:nth-child(5),
+.dungeon-locator>.dl-p5{
     background-color: rgba(255, 0, 255, 1);
 }
-#player-list>div:nth-child(6){
+#player-list>div:nth-child(6),
+.dungeon-locator>.dl-p6{
     background-color: rgba(0, 255, 0, 1);
 }

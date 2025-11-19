@@ -226,11 +226,61 @@ title-tag: MTG Dungeon Tracker
         </div>
     </div>
     <div class="dungeon-settings">
-        <div id="dungeon-selector">
-            <img id="dungeon-selector undercity" onclick="selectDungeon('undercity')" src="assets/images/button-undercity.png" class="disabled"/>
-            <img id="dungeon-selector annihilation" onclick="selectDungeon('annihilation')" src="assets/images/button-annihilation.png" />
-            <img id="dungeon-selector mad-mage" onclick="selectDungeon('mad-mage')" src="assets/images/button-mad-mage.png" />
-            <img id="dungeon-selector phandelver" onclick="selectDungeon('phandelver')" src="assets/images/button-phandelver.png" />
+        <div id="dungeon-selectors">
+            <div class="dungeon-selector disabled" id="dungeon-selector undercity">
+                <!-- <img id="dungeon-selector undercity" onclick="selectDungeon('undercity')" src="assets/images/button-undercity.png" class="disabled"/> -->
+                <div></div>
+                <img onclick="selectDungeon('undercity')" src="assets/images/button-undercity.png" class="disabled"/>
+                <div class="dungeon-locator">
+                    <div class="dl-p1"></div>
+                    <div class="dl-p2"></div>
+                    <div class="dl-p3"></div>
+                    <div class="dl-p4"></div>
+                    <div class="dl-p5"></div>
+                    <div class="dl-p6"></div>
+                </div>
+            </div>
+            <div class="dungeon-selector" id="dungeon-selector annihilation">
+                
+                <!-- <img id="dungeon-selector annihilation" onclick="selectDungeon('annihilation')" src="assets/images/button-annihilation.png" /> -->
+                <div></div>
+                <img onclick="selectDungeon('annihilation')" src="assets/images/button-annihilation.png" />
+                
+                <div class="dungeon-locator">
+                    <div class="dl-p1"></div>
+                    <div class="dl-p2"></div>
+                    <div class="dl-p3"></div>
+                    <div class="dl-p4"></div>
+                    <div class="dl-p5"></div>
+                    <div class="dl-p6"></div>
+                </div>
+            </div>
+            <div class="dungeon-selector" id="dungeon-selector mad-mage">
+                <!-- <img id="dungeon-selector mad-mage" onclick="selectDungeon('mad-mage')" src="assets/images/button-mad-mage.png" /> -->
+                <div></div>
+                <img onclick="selectDungeon('mad-mage')" src="assets/images/button-mad-mage.png" />
+                <div class="dungeon-locator">
+                    <div class="dl-p1"></div>
+                    <div class="dl-p2"></div>
+                    <div class="dl-p3"></div>
+                    <div class="dl-p4"></div>
+                    <div class="dl-p5"></div>
+                    <div class="dl-p6"></div>
+                </div>
+            </div>
+            <div class="dungeon-selector" id="dungeon-selector phandelver">
+                <!-- <img id="dungeon-selector phandelver" onclick="selectDungeon('phandelver')" src="assets/images/button-phandelver.png" /> -->
+                <div></div>
+                <img onclick="selectDungeon('phandelver')" src="assets/images/button-phandelver.png" />
+                <div class="dungeon-locator">
+                    <div class="dl-p1"></div>
+                    <div class="dl-p2"></div>
+                    <div class="dl-p3"></div>
+                    <div class="dl-p4"></div>
+                    <div class="dl-p5"></div>
+                    <div class="dl-p6"></div>
+                </div>
+            </div>
         </div>
         <div id="player-tracker">
             <div id="player-list"></div>
@@ -414,6 +464,20 @@ title-tag: MTG Dungeon Tracker
             document.getElementsByClassName(className).item(0).style.borderImageSource = remainingGradient;
         }
         e.style.borderImageSource = newGradient;
+
+        // Set the dungeon locator
+        // let specDungeonSelector = document.querySelector(`[id="dungeon-selector ${currentDungeon}"]`);
+        // console.log(specDungeonSelector);
+        // specDungeonSelector.querySelector(`.dl-p${currentPlayer+1}`).classList.add("active");
+
+        let allDungeonSelectors = document.getElementsByClassName(`dungeon-selector`);
+        for (let ds of allDungeonSelectors){
+            if(ds.id.includes(currentDungeon)){
+                ds.querySelector(`.dl-p${currentPlayer+1}`).classList.add("active");
+            } else {
+                ds.querySelector(`.dl-p${currentPlayer+1}`).classList.remove("active");
+            }
+        }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
